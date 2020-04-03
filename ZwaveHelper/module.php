@@ -199,7 +199,7 @@ class ZwaveHelper extends IPSModule {
 				}
 				else {
 					
-					if ($currentDeviceHealth['packetsFailed'] >= $this->RegisterPropertyInteger('CriticalThreshold') ) {
+					if ($currentDeviceHealth['packetsFailed'] >= $this->ReadPropertyInteger('CriticalThreshold') ) {
 						
 						$devicesCritical++;
 					}
