@@ -136,11 +136,7 @@ class ZwaveHelper extends IPSModule {
 			
 			$currentDeviceHealth = $this->GetDeviceHealth($currentDevice);
 			
-			print gettype($currentDeviceHealth);
-			print "\n";
-			print_r($currentDeviceHealth);
-			
-			if (count($currentDeviceHealth > 0) ) {
+			if (count($currentDeviceHealth) > 0) ) {
 				
 				$allZwaveDevicesHealth[] = $currentDeviceHealth;
 			}
@@ -193,7 +189,14 @@ class ZwaveHelper extends IPSModule {
 		
 		if (isset($zwaveInformation->NodeFailed) ) {
 			
-			$result['nodeFailed'] = $zwaveInformation->NodeFailed;
+			if ($zwaveInformation->NodeFailed) {
+				
+				$result['nodeFailed'] = 1;
+			}
+			else {
+				
+				$result['nodeFailed'] = 0;
+			}
 		}
 		/*
 		if (in_array('NodePacketSend', $zwaveInformation) ) {
