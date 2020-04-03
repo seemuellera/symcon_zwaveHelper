@@ -125,6 +125,7 @@ class ZwaveHelper extends IPSModule {
 		$htmlOutput .= '<th>Status</th>';
 		$htmlOutput .= '<th>Packets Sent</th>';
 		$htmlOutput .= '<th>Packets Received</th>';
+		$htmlOutput .= '<th>Packets Failed</th>';
 		$htmlOutput .= '</tr>';
 		$htmlOutput .= '</thead>';
 
@@ -161,6 +162,21 @@ class ZwaveHelper extends IPSModule {
 			}
 			$htmlOutput .= "<td>" . $currentDeviceHealth['packetsSent'] . "</td>";
 			$htmlOutput .= "<td>" . $currentDeviceHealth['packetsReceived'] . "</td>";
+			if ($currentDeviceHealth['packetsFailed'] < $this->ReadPropertyInteger('WarningThreshold') ) {
+			
+				$htmlOutput .= '<td bgcolor="' . COLOR_OK . '">' . $currentDeviceHealth['packetsFailed'] . '</td>';
+			}
+			else {
+				
+				if ($currentDeviceHealth['packetsFailed'] >= $this->ReadPropertyInteger('CriticalThreshold') ) {
+					
+					$htmlOutput .= '<td bgcolor="' . COLOR_CRIT . '">' . $currentDeviceHealth['packetsFailed'] . '</td>';
+				}
+				else {
+					
+					$htmlOutput .= '<td bgcolor="' . COLOR_WARN . '">' . $currentDeviceHealth['packetsFailed'] . '</td>';
+				}
+			}
 			$htmlOutput .= '</tr>';
 		}
 		
