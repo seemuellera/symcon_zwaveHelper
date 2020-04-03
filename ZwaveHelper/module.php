@@ -332,7 +332,7 @@ class ZwaveHelper extends IPSModule {
 		
 		foreach($devicesWithFailedPackets as $currentDevice) {
 			
-			devicesSorted[] = $currentDevice['instanceId'];
+			$devicesSorted[] = $currentDevice['instanceId'];
 		}
 		
 		return $devicesSorted;
