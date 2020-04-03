@@ -149,7 +149,14 @@ class ZwaveHelper extends IPSModule {
 			$htmlOutput .= '<tr>';
 			$htmlOutput .= "<td>" . $currentDeviceHealth['instanceName'] . "</td>";
 			$htmlOutput .= "<td>" . $currentDeviceHealth['instanceId'] . "</td>";
-			$htmlOutput .= "<td>" . $currentDeviceHealth['nodeFailed'] . "</td>";
+			if ($currentDeviceHealth['nodeFailed'] == 1) {
+				
+				$htmlOutput .= '<td bgcolor="' . COLOR_CRIT . '">Failed</td>';
+			}
+			else {
+				
+				$htmlOutput .= '<td bgcolor="' . COLOR_OK . '">OK</td>';
+			}
 			$htmlOutput .= '</tr>';
 		}
 		
