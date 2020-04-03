@@ -1,0 +1,14 @@
+{
+  "id": "{03C2B1EF-3500-4D0A-8E0F-99EF4C0B9139}",
+  "name": "ZwaveHelper",
+  "type": 3,
+  "vendor": "Andreas Seemueller",
+  "aliases": 
+  [
+	  "ZwaveHelper"
+  ],
+  "parentRequirements": [],
+  "childRequirements": [],
+  "implemented": [],
+  "prefix": "ZWHELPER"
+}
