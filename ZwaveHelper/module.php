@@ -232,7 +232,7 @@ class ZwaveHelper extends IPSModule {
 		return $allZwaveDevices;
 	}
 	
-	public function GetDeviceHealth($instanceId) {
+	public function GetDeviceHealth(int $instanceId) {
 		
 		$result = Array();
 		
@@ -280,7 +280,7 @@ class ZwaveHelper extends IPSModule {
 		return $result;
 	}
 	
-	public function IsDeviceHealthy($instanceId) {
+	public function IsDeviceHealthy(int $instanceId) {
 		
 		// Return an empty array and stop processing if the ID does not exists
 		if (! IPS_InstanceExists($instanceId) ) {
@@ -308,7 +308,7 @@ class ZwaveHelper extends IPSModule {
 		}
 	}
 	
-	public function GetDevicesWithFailedPackets($failedPacketThreshold) {
+	public function GetDevicesWithFailedPackets(int $failedPacketThreshold) {
 		
 		$allZwaveDevices = $this->GetAllDevices();
 		$devicesWithFailedPackets = Array();
