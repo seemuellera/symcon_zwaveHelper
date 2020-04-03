@@ -277,8 +277,65 @@ class ZwaveHelper extends IPSModule {
 			$result['packetsFailed'] = $zwaveInformation->NodePacketFailed;
 		}
 		
-		
 		return $result;
+	}
+	
+	public function IsDeviceHealthy($instanceId) {
+		
+		// Return an empty array and stop processing if the ID does not exists
+		if (! IPS_InstanceExists($instanceId) ) {
+		
+			return false;
+		}
+		
+		$zwaveInformationJson = ZW_GetInformation($instanceId);
+		$zwaveInformation = json_decode($zwaveInformationJson);
+	
+		if (isset($zwaveInformation->NodeFailed) ) {
+			
+			if ($zwaveInformation->NodeFailed) {
+				
+				return false;
+			}
+			else {
+				
+				return true;
+			}
+		}
+		else {
+			
+			return false;
+		}
+	}
+	
+	public function GetDevicesWithFailedPackets($failedPacketThreshold) {
+		
+		$allZwaveDevices = $this->GetAllDevices();
+		$devicesWithFailedPackets = Array();
+		
+		foreach ($allZwaveDevices as $currentDevice) {
+			
+			$currentDeviceHealth = $this->GetDeviceHealth($currentDevice);
+			
+			if (count($currentDeviceHealth) > 0) {
+				
+				if ($currentDeviceHealth['packetsFailed'] >= $failedPacketThreshold) {
+					
+					$devicesWithFailedPackets[] = $currentDeviceHealth;
+				}
+			}
+		}
+		
+		array_multisort(array_column($devicesWithFailedPackets, "packetsFailed"), SORT_DESC, $devicesWithFailedPackets);
+		
+		$devicesSorted = Array();
+		
+		foreach($devicesWithFailedPackets as $currentDevice) {
+			
+			devicesSorted[] = $currentDevice['instanceId'];
+		}
+		
+		return $devicesSorted;
 	}
 }
 ?>
