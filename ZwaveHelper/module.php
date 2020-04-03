@@ -35,6 +35,9 @@ class ZwaveHelper extends IPSModule {
 		
 		// Variables
 		$this->RegisterVariableString("DeviceHealth","Device Health","~HTMLBox");
+		$this->RegisterVariableInteger("DeviceHealthOk","Devices in State Healthy");
+		$this->RegisterVariableInteger("DeviceHealthWarn","Devices in State Warning");
+		$this->RegisterVariableInteger("DeviceHealthCrit","Healthy in State Critical");
 		
 		// Default Actions
 		// $this->EnableAction("Status");
@@ -113,6 +116,10 @@ class ZwaveHelper extends IPSModule {
 	
 	public function RefreshDeviceHealth() {
 		
+		$devicesHealthy = 0;
+		$devicesWarning = 0;
+		$devicesCritical = 0;
+		
 		$htmlOutput = '';
 		
 		$htmlOutput .= '<table border="1px">';
@@ -178,6 +185,30 @@ class ZwaveHelper extends IPSModule {
 				}
 			}
 			$htmlOutput .= '</tr>';
+			
+			// Stats
+			if ($currentDeviceHealth['nodeFailed'] == 1) {
+				
+				$devicesCritical++;
+			}
+			else {
+				
+				if ($currentDeviceHealth['packetsFailed'] < $this->ReadPropertyInteger('WarningThreshold') ) {
+					
+					$devicesHealthy++;
+				}
+				else {
+					
+					if ($currentDeviceHealth['packetsFailed'] >= $this->RegisterPropertyInteger('CriticalThreshold') ) {
+						
+						$devicesCritical++;
+					}
+					else {
+						
+						$devicesWarning++;
+					}
+				}
+			}
 		}
 		
 		$htmlOutput .= '</tbody>';
@@ -186,6 +217,11 @@ class ZwaveHelper extends IPSModule {
 		
 		// Save the result to a variable
 		SetValue($this->GetIDForIdent('DeviceHealth'), $htmlOutput);
+		
+		SetValue($this->GetIDForIdent('DeviceHealthOk'), $devicesHealthy);
+		SetValue($this->GetIDForIdent('DeviceHealthWarn'), $devicesWarning);
+		SetValue($this->GetIDForIdent('DeviceHealthCrit'), $devicesCritical);
+		
 		return true;
 	}
 	
