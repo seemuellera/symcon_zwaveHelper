@@ -198,22 +198,22 @@ class ZwaveHelper extends IPSModule {
 				$result['nodeFailed'] = 0;
 			}
 		}
-		/*
-		if (in_array('NodePacketSend', $zwaveInformation) ) {
+		
+		if (isset($zwaveInformation->NodePacketSend) ) {
 			
-			$result['packetsSent'] = $zwaveInformation['NodePacketSend'];
+			$result['packetsSent'] = $zwaveInformation->NodePacketSend;
 		}
 		
-		if (in_array('NodePacketReceived', $zwaveInformation) ) {
+		if (isset($zwaveInformation->NodePacketReceived) ) {
 			
-			$result['packetsReceived'] = $zwaveInformation['NodePacketReceived'];
+			$result['packetsReceived'] = $zwaveInformation->NodePacketReceived;
 		}
 
-		if (in_array('NodePacketFailed', $zwaveInformation) ) {
+		if (isset($zwaveInformation->NodePacketFailed) ) {
 			
-			$result['packetsFailed'] = $zwaveInformation['NodePacketFailed'];
+			$result['packetsFailed'] = $zwaveInformation->NodePacketFailed;
 		}
-		*/
+		
 		
 		return $result;
 	}
