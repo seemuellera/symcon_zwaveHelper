@@ -125,9 +125,11 @@ class ZwaveHelper extends IPSModule {
 		$allZwaveDevices = $this->GetAllDevices();
 		
 		foreach ($allZwaveDevices as $currentDevice) {
-			
-			$htmlOutput .= "<tr>" . IPS_GetName($currentDevice) . "</tr>";
-			$htmlOutput .= "<tr>" . $currentDevice . "</tr>";
+		
+			$htmlOutput .= '<tr>';
+			$htmlOutput .= "<td>" . IPS_GetName($currentDevice) . "</td>";
+			$htmlOutput .= "<td>" . $currentDevice . "</td>";
+			$htmlOutput .= '</tr>';
 		}
 		
 		$htmlOutput .= '</tbody>';
