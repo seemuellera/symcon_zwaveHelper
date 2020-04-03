@@ -1,6 +1,12 @@
 <?php
 
+// GUID to identify the Z-Wave devices
 define("ZWAVE_DEVICE_GUID","{101352E1-88C7-4F16-998B-E20D50779AF6}");
+
+// colors
+define("COLOR_OK","green");
+define("COLOR_WARN","orange");
+define("COLOR_CRIT","red");
 
 // Klassendefinition
 class ZwaveHelper extends IPSModule {
@@ -116,6 +122,7 @@ class ZwaveHelper extends IPSModule {
 		$htmlOutput .= '<tr>';
 		$htmlOutput .= '<th>Instance Name</th>';
 		$htmlOutput .= '<th>Instance ID</th>';
+		$htmlOutput .= '<th>Status</th>';
 		$htmlOutput .= '</tr>';
 		$htmlOutput .= '</thead>';
 
@@ -123,12 +130,26 @@ class ZwaveHelper extends IPSModule {
 		$htmlOutput .= '<tbody>';
 		
 		$allZwaveDevices = $this->GetAllDevices();
+		$allZwaveDevicesHealth = Array();
 		
 		foreach ($allZwaveDevices as $currentDevice) {
+			
+			$currentDeviceHealth = $this->GetDeviceHealth($currentDevice);
+			
+			if (count($currentDeviceHealth > 0) ) {
+				
+				$allZwaveDevicesHealth[] = $currentDeviceHealth;
+			}
+		}
+		
+		array_multisort(array_column($allZwaveDevicesHealth, "packetsFailed"), SORT_DESC, $allZwaveDevicesHealth );
+		
+		foreach ($allZwaveDevicesHealth as $currentDeviceHealth) {
 		
 			$htmlOutput .= '<tr>';
-			$htmlOutput .= "<td>" . IPS_GetName($currentDevice) . "</td>";
-			$htmlOutput .= "<td>" . $currentDevice . "</td>";
+			$htmlOutput .= "<td>" . $currentDeviceHealth['instanceName'] . "</td>";
+			$htmlOutput .= "<td>" . $currentDeviceHealth['instanceId'] . "</td>";
+			$htmlOutput .= "<td>" . $currentDeviceHealth['nodeFailed'] . "</td>";
 			$htmlOutput .= '</tr>';
 		}
 		
@@ -146,6 +167,47 @@ class ZwaveHelper extends IPSModule {
 		$allZwaveDevices = IPS_GetInstanceListByModuleId(ZWAVE_DEVICE_GUID);
 		
 		return $allZwaveDevices;
+	}
+	
+	public function GetDeviceHealth($instanceId) {
+		
+		$result = Array();
+		
+		// Return an empty array and stop processing if the ID does not exists
+		if (! IPS_InstanceExists($instanceId) ) {
+		
+			return $result;
+		}
+		
+		// IPS Information
+		$result['instanceId'] = $instanceId;
+		$result['instanceName'] = IPS_GetName($instanceId);
+		
+		// Z-Wave Information
+		$zwaveInformationJson = ZW_GetInformation($instanceId);
+		$zwaveInformation = json_decode($zwaveInformationJson);
+		
+		if (in_array('NodeFailed', $zwaveInformation) ) {
+			
+			$result['nodeFailed'] = $zwaveInformation['NodeFailed'];
+		}
+		
+		if (in_array('NodePacketSend', $zwaveInformation) ) {
+			
+			$result['packetsSent'] = $zwaveInformation['NodePacketSend'];
+		}
+		
+		if (in_array('NodePacketReceived', $zwaveInformation) ) {
+			
+			$result['packetsReceived'] = $zwaveInformation['NodePacketReceived'];
+		}
+
+		if (in_array('NodePacketFailed', $zwaveInformation) ) {
+			
+			$result['packetsFailed'] = $zwaveInformation['NodePacketFailed'];
+		}
+		
+		return $result;
 	}
 }
 ?>
