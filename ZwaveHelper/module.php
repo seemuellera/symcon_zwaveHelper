@@ -187,7 +187,7 @@ class ZwaveHelper extends IPSModule {
 		$zwaveInformationJson = ZW_GetInformation($instanceId);
 		$zwaveInformation = json_decode($zwaveInformationJson);
 		
-		if (in_array('NodeFailed', $zwaveInformation) ) {
+		if (property_exists($zwaveInformation, 'NodeFailed') ) {
 			
 			$result['nodeFailed'] = $zwaveInformation['NodeFailed'];
 		}
