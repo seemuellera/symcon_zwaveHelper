@@ -83,8 +83,7 @@ class ZwaveHelper extends IPSModule {
 
 		IPS_LogMessage($_IPS['SELF'],"ZWHELPER - Refresh in progress");
 		
-		// print_r($this->listDirectory() );
-		
+		$this->RefreshDeviceHealth();
 	}
 	
 	public function RequestAction($Ident, $Value) {
