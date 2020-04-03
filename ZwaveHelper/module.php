@@ -187,15 +187,11 @@ class ZwaveHelper extends IPSModule {
 		$zwaveInformationJson = ZW_GetInformation($instanceId);
 		$zwaveInformation = json_decode($zwaveInformationJson);
 		
-		print gettype($zwaveInformation);
-		print "\n";
-		print_r($zwaveInformation);
-		
-		/*if (property_exists($zwaveInformation, 'NodeFailed') ) {
+		if (isset($zwaveInformation->NodeFailed) ) {
 			
-			$result['nodeFailed'] = $zwaveInformation['NodeFailed'];
+			$result['nodeFailed'] = $zwaveInformation->NodeFailed;
 		}
-		
+		/*
 		if (in_array('NodePacketSend', $zwaveInformation) ) {
 			
 			$result['packetsSent'] = $zwaveInformation['NodePacketSend'];
@@ -209,7 +205,8 @@ class ZwaveHelper extends IPSModule {
 		if (in_array('NodePacketFailed', $zwaveInformation) ) {
 			
 			$result['packetsFailed'] = $zwaveInformation['NodePacketFailed'];
-		}*/
+		}
+		*/
 		
 		return $result;
 	}
