@@ -123,6 +123,8 @@ class ZwaveHelper extends IPSModule {
 		$htmlOutput .= '<th>Instance Name</th>';
 		$htmlOutput .= '<th>Instance ID</th>';
 		$htmlOutput .= '<th>Status</th>';
+		$htmlOutput .= '<th>Packets Sent</th>';
+		$htmlOutput .= '<th>Packets Received</th>';
 		$htmlOutput .= '</tr>';
 		$htmlOutput .= '</thead>';
 
@@ -157,6 +159,8 @@ class ZwaveHelper extends IPSModule {
 				
 				$htmlOutput .= '<td bgcolor="' . COLOR_OK . '">OK</td>';
 			}
+			$htmlOutput .= "<td>" . $currentDeviceHealth['packetsSent'] . "</td>";
+			$htmlOutput .= "<td>" . $currentDeviceHealth['packetsReceived'] . "</td>";
 			$htmlOutput .= '</tr>';
 		}
 		
