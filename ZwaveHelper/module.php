@@ -136,6 +136,10 @@ class ZwaveHelper extends IPSModule {
 			
 			$currentDeviceHealth = $this->GetDeviceHealth($currentDevice);
 			
+			print gettype($currentDeviceHealth);
+			print "\n";
+			print_r($currentDeviceHealth);
+			
 			if (count($currentDeviceHealth > 0) ) {
 				
 				$allZwaveDevicesHealth[] = $currentDeviceHealth;
