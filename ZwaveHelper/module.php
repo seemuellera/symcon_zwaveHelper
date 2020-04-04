@@ -319,6 +319,8 @@ class ZwaveHelper extends IPSModule {
 			
 			$currentDeviceAssociations = $this->GetDeviceAssociations($currentDevice);
 			
+			print_r($currentDeviceAssociations);
+			
 			if (count($currentDeviceAssociations) > 0) {
 				
 				if(in_array('associationGroups', $currentDeviceAssociations) ) {
@@ -327,8 +329,6 @@ class ZwaveHelper extends IPSModule {
 				}
 			}
 		}
-		
-		print_r($allZwaveDeviceAssociations);
 		
 		array_multisort(array_column($allZwaveDeviceAssociations, "nodeId"), SORT_ASC, $allZwaveDeviceAssociations );
 		
