@@ -305,6 +305,7 @@ class ZwaveHelper extends IPSModule {
 		$htmlOutput .= '<th>Instance ID</th>';
 		$htmlOutput .= '<th>Z-Wave Node ID</th>';
 		$htmlOutput .= '<th>Group</th>';
+		$htmlOUtput .= '<th>Target Node Name</th>';
 		$htmlOutput .= '<th>Target Node ID</th>';
 		$htmlOutput .= '</tr>';
 		$htmlOutput .= '</thead>';
@@ -341,6 +342,7 @@ class ZwaveHelper extends IPSModule {
 					$htmlOutput .= "<td>" . $currentDeviceAssociations['instanceId'] . "</td>";
 					$htmlOutput .= "<td>" . $currentDeviceAssociations['nodeId'] . "</td>";			
 					$htmlOutput .= "<td>" . $groupNumber . "</td>";
+					$htmlOutput .= "<td>" . IPS_GetName($this->GetInstanceId($targetNodeId)). "</td>";
 					$htmlOutput .= "<td>" . $targetNodeId . "</td>";
 					$htmlOutput .= '<tr>';
 				}
