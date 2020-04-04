@@ -627,6 +627,28 @@ class ZwaveHelper extends IPSModule {
 		return $manufacturerName;
 	}
 	
+	public function GetInstanceId($nodeId) {
+		
+		$allZwaveDevices = $this->GetAllDevices();
+		
+		$allNodeIds = Array();
+		
+		foreach ($allZwaveDevices as $currentDevice) {
+			
+			$currentNodeId = $this->GetZwaveNodeId($currentDevice);
+			$allNodeIds[$currentNodeId = $currentDevice;
+		}
+		
+		if (array_key_exists($nodeId, $allNodeIds) ) {
+			
+			return $allNodeIds[$nodeId];
+		}
+		else {
+			
+			return false;
+		}
+	}
+	
 	protected function LookupProductId($manufacturerId, $productTypeId, $productId) {
 		
 		$productName = $productTypeId . " " . $productId;
