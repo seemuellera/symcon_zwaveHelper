@@ -636,7 +636,7 @@ class ZwaveHelper extends IPSModule {
 		foreach ($allZwaveDevices as $currentDevice) {
 			
 			$currentNodeId = $this->GetZwaveNodeId($currentDevice);
-			$allNodeIds[$currentNodeId = $currentDevice;
+			$allNodeIds[$currentNodeId] = $currentDevice;
 		}
 		
 		if (array_key_exists($nodeId, $allNodeIds) ) {
