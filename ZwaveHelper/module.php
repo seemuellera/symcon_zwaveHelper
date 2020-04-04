@@ -509,7 +509,7 @@ class ZwaveHelper extends IPSModule {
 		return $manufacturerName;
 	}
 	
-	protected function LookupProductId($manufacturerId, $productType, $productId) {
+	protected function LookupProductId($manufacturerId, $productTypeId, $productId) {
 		
 		$productName = $productTypeId . " " . $productId;
 
