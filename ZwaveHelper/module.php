@@ -40,6 +40,7 @@ class ZwaveHelper extends IPSModule {
 		$this->RegisterVariableInteger("DeviceHealthCrit","Healthy in State Critical");
 		
 		$this->RegisterVariableString("DeviceConfiguration","Device Configuration","~HTMLBox");
+		$this->RegisterVariableString("DeviceAssociations","Device Configuration","~HTMLBox");
 		
 		// Default Actions
 		// $this->EnableAction("Status");
@@ -96,6 +97,7 @@ class ZwaveHelper extends IPSModule {
 		
 		$this->RefreshDeviceHealth();
 		$this->RefreshDeviceConfiguration();
+		$this->RefreshDeviceAssociations();
 	}
 	
 	public function RequestAction($Ident, $Value) {
@@ -289,6 +291,68 @@ class ZwaveHelper extends IPSModule {
 		
 		return true;
 	}
+
+	public function RefreshDeviceAssociations() {
+				
+		$htmlOutput = '';
+		
+		$htmlOutput .= '<table border="1px">';
+		
+		// Headings
+		$htmlOutput .= '<thead>';
+		$htmlOutput .= '<tr>';
+		$htmlOutput .= '<th>Instance Name</th>';
+		$htmlOutput .= '<th>Instance ID</th>';
+		$htmlOutput .= '<th>Z-Wave Node ID</th>';
+		$htmlOutput .= '<th>Group</th>';
+		$htmlOutput .= '<th>Target Node ID</th>';
+		$htmlOutput .= '</tr>';
+		$htmlOutput .= '</thead>';
+
+		// Content
+		$htmlOutput .= '<tbody>';
+		
+		$allZwaveDevices = $this->GetAllDevices();
+		$allZwaveDeviceAssociations = Array();
+		
+		foreach ($allZwaveDevices as $currentDevice) {
+			
+			$currentDeviceAssociations = $this->GetDeviceAssociations($currentDevice);
+			
+			if (count($currentDeviceAssociations) > 0) {
+				
+				if(in_array('associationGroups', $currentDeviceAssociations) ) {
+				
+					$allZwaveDeviceAssociations[] = $currentDeviceAssociations;
+				}
+			}
+		}
+		
+		array_multisort(array_column($allZwaveDeviceAssociations, "nodeId"), SORT_ASC, $allZwaveDeviceAssociations );
+		
+		foreach ($allZwaveDeviceAssociations as $currentDeviceAssociations) {
+		
+			$htmlOutput .= '<tr>';
+			$htmlOutput .= "<td>" . $currentDeviceAssociations['instanceName'] . "</td>";
+			$htmlOutput .= "<td>" . $currentDeviceAssociations['instanceId'] . "</td>";
+			$htmlOutput .= "<td>" . $currentDeviceAssociations['nodeId'] . "</td>";
+			foreach ($currentDeviceAssociations as $groupNumber => $targetNodeId) {
+				
+				$htmlOutput .= "<td>" . $groupNumber . "</td>";
+				$htmlOutput .= "<td>" . $targetNodeId . "</td>";
+			}
+			$htmlOutput .= '<tr>';
+		}
+		
+		$htmlOutput .= '</tbody>';
+		
+		$htmlOutput .= '</table>';
+		
+		// Save the result to a variable
+		SetValue($this->GetIDForIdent('DeviceAssociations'), $htmlOutput);
+		
+		return true;
+	}
 	
 	public function GetAllDevices() {
 		
@@ -441,7 +505,7 @@ class ZwaveHelper extends IPSModule {
 		
 		if (isset($zwaveInformation->MultiChannelAssociationGroups) ) {
 			
-			$group = 0;
+			$group = 1;
 			$multiChannelAssociationGroups = json_decode($zwaveInformation->MultiChannelAssociationGroups);
 			
 			foreach ($multiChannelAssociationGroups as $currentGroup) {
