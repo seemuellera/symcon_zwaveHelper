@@ -244,6 +244,8 @@ class ZwaveHelper extends IPSModule {
 		$htmlOutput .= '<th>Z-Wave Node ID</th>';
 		$htmlOutput .= '<th>Classes</th>';
 		$htmlOutput .= '<th>Secure Classes</th>';
+		$htmlOutput .= '<th>Manufacturer</th>';
+		$htmlOutput .= '<th>Product</th>';
 		$htmlOutput .= '</tr>';
 		$htmlOutput .= '</thead>';
 
@@ -273,6 +275,8 @@ class ZwaveHelper extends IPSModule {
 			$htmlOutput .= "<td>" . $currentDeviceConfiguration['nodeId'] . "</td>";
 			$htmlOutput .= "<td>" . $currentDeviceConfiguration['nodeClassCount'] . "</td>";
 			$htmlOutput .= "<td>" . $currentDeviceConfiguration['nodeSecureClassCount'] . "</td>";
+			$htmlOutput .= "<td>" . $this->LookupManufacturerId($currentDeviceConfiguration['manufacturerId']) . "</td>";
+			$htmlOutput .= "<td>" . $this->LookupProductId($currentDeviceConfiguration['manufacturerId'], $currentDeviceConfiguration['productType'], $currentDeviceConfiguration['productId']) . "</td>";
 			$htmlOutput .= '<tr>';
 		}
 		
@@ -396,6 +400,21 @@ class ZwaveHelper extends IPSModule {
 		}
 		$result['nodeSecureClassCount'] = $nodeSecureClassCount;
 		
+		if (isset($zwaveInformation->ManufacturerID) ) {
+			
+			$result['manufacturerId'] = $zwaveInformation->ManufacturerID;
+		}
+		
+		if (isset($zwaveInformation->ProductType) ) {
+			
+			$result['productType'] = $zwaveInformation->ProductType;
+		}
+		
+		if (isset($zwaveInformation->ProductID) ) {
+			
+			$result['productId'] = $zwaveInformation->ProductID;
+		}
+		
 		return $result;
 	}
 	
@@ -462,6 +481,64 @@ class ZwaveHelper extends IPSModule {
 		$nodeId = IPS_GetProperty($instanceId, 'NodeID');
 
 		return $nodeId;
+	}
+	
+	protected function LookupManufacturerId($manufacturerId) {
+		
+		$manufacturerName = $manufacturerId;
+
+		switch($manufacturerId) {
+
+			case "010F":
+				$manufacturerName = "Fibaro";
+				break;
+			case "0086":
+				$manufacturerName = "AEON Labs";
+				break;
+			case "013C":
+				$manufacturerName = "Philio";
+				break;
+			case "0258":
+				$manufacturerName = "Shenzen neo";
+				break;
+			case "019A":
+				$manufacturerName = "Sensative";
+				break;
+		}
+
+		return $manufacturerName;
+	}
+	
+	protected function LookupProductId($manufacturerId, $productType, $productId) {
+		
+		$productName = $productTypeId . " " . $productId;
+
+		if ( ($manufacturerId == "010F") && ($productTypeId == "0102") && ($productId == "1000") ) {
+
+			$productName = "FGD-212";
+		}
+
+		if ( ($manufacturerId == "010F") && ($productTypeId == "0602") && ($productId == "1001") ) {
+
+			$productName = "FGWPE new";
+		}
+
+		if ( ($manufacturerId == "010F") && ($productTypeId == "0600") && ($productId == "1000") ) {
+
+			$productName = "FGWPE old";
+		}
+
+		if ( ($manufacturerId == "019A") && ($productTypeId == "0003") && ($productId == "0003") ) {
+
+			$productName = "Strips Door / Window";
+		}
+
+		if ( ($manufacturerId == "0086") && ($productTypeId == "0003") && ($productId == "0074") ) {
+
+			$productName = "Nano Dimmer with energy metering";
+		}
+
+		return $productName;
 	}
 }
 ?>
