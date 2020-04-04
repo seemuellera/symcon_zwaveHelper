@@ -332,11 +332,8 @@ class ZwaveHelper extends IPSModule {
 		
 		foreach ($allZwaveDeviceAssociations as $currentDeviceAssociations) {
 		
-			foreach ($currentDeviceAssociations as $groupNumber => $targetNodeIds) {
+			foreach ($currentDeviceAssociations['associationGroups'] as $groupNumber => $targetNodeIds) {
 
-				var_dump($groupNumber);
-				var_dump($targetNodeIds);
-				
 				foreach ($targetNodeIds as $targetNodeId) {
 			
 					$htmlOutput .= '<tr>';
