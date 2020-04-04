@@ -319,11 +319,9 @@ class ZwaveHelper extends IPSModule {
 			
 			$currentDeviceAssociations = $this->GetDeviceAssociations($currentDevice);
 			
-			print_r($currentDeviceAssociations);
-			
 			if (count($currentDeviceAssociations) > 0) {
 				
-				if(in_array('associationGroups', $currentDeviceAssociations) ) {
+				if(array_key_exists('associationGroups', $currentDeviceAssociations) ) {
 				
 					$allZwaveDeviceAssociations[] = $currentDeviceAssociations;
 				}
