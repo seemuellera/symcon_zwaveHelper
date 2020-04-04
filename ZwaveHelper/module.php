@@ -242,6 +242,8 @@ class ZwaveHelper extends IPSModule {
 		$htmlOutput .= '<th>Instance Name</th>';
 		$htmlOutput .= '<th>Instance ID</th>';
 		$htmlOutput .= '<th>Z-Wave Node ID</th>';
+		$htmlOutput .= '<th>Classes</th>';
+		$htmlOutput .= '<th>Secure Classes</th>';
 		$htmlOutput .= '</tr>';
 		$htmlOutput .= '</thead>';
 
@@ -269,6 +271,8 @@ class ZwaveHelper extends IPSModule {
 			$htmlOutput .= "<td>" . $currentDeviceConfiguration['instanceName'] . "</td>";
 			$htmlOutput .= "<td>" . $currentDeviceConfiguration['instanceId'] . "</td>";
 			$htmlOutput .= "<td>" . $currentDeviceConfiguration['nodeId'] . "</td>";
+			$htmlOutput .= "<td>" . $currentDeviceConfiguration['nodeClassCount'] . "</td>";
+			$htmlOutput .= "<td>" . $currentDeviceConfiguration['nodeSecureClassCount'] . "</td>";
 			$htmlOutput .= '<tr>';
 		}
 		
@@ -360,6 +364,16 @@ class ZwaveHelper extends IPSModule {
 		// Z-Wave Information
 		$zwaveInformationJson = ZW_GetInformation($instanceId);
 		$zwaveInformation = json_decode($zwaveInformationJson);
+		
+		if (isset($zwaveInformation->NodeClasses) ) {
+			
+			$result['nodeClassCount'] = count($zwaveInformation->NodeClasses);
+		}
+		
+		if (isset($zwaveInformation->NodeSecureClasses) ) {
+			
+			$result['nodeSecureClassCount'] = count($zwaveInformation->NodeSecureClasses);
+		}
 		
 		return $result;
 	}
