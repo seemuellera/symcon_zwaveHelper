@@ -365,15 +365,36 @@ class ZwaveHelper extends IPSModule {
 		$zwaveInformationJson = ZW_GetInformation($instanceId);
 		$zwaveInformation = json_decode($zwaveInformationJson);
 		
+		// Z-Wave classes
+		$nodeClassCount = 0;
 		if (isset($zwaveInformation->NodeClasses) ) {
 			
-			$result['nodeClassCount'] = count($zwaveInformation->NodeClasses);
+			preg_match_all('/(\d+)/', $zwaveInformation->NodeClasses, $matches);
+			$nodeClassCount += count($matches[1]);
+			
 		}
+		if (isset($zwaveInformation->NodeControlClasses) ) {
+			
+			preg_match_all('/(\d+)/', $zwaveInformation->NodeControlClasses, $matches);
+			$nodeClassCount += count($matches[1]);
+			
+		}
+		$result['nodeClassCount'] = $nodeClassCount;
 		
+		$nodeSecureClassCount = 0;
 		if (isset($zwaveInformation->NodeSecureClasses) ) {
 			
-			$result['nodeSecureClassCount'] = count($zwaveInformation->NodeSecureClasses);
+			preg_match_all('/(\d+)/', $zwaveInformation->NodeSecureClasses, $matches);
+			$nodeSecureClassCount += count($matches[1]);
+			
 		}
+		if (isset($zwaveInformation->NodeSecureControlClasses) ) {
+			
+			preg_match_all('/(\d+)/', $zwaveInformation->NodeSecureControlClasses, $matches);
+			$nodeSecureClassCount += count($matches[1]);
+			
+		}
+		$result['nodeSecureClassCount'] = $nodeSecureClassCount;
 		
 		return $result;
 	}
