@@ -418,6 +418,57 @@ class ZwaveHelper extends IPSModule {
 		return $result;
 	}
 	
+	public function GetDeviceAssociations(int $instanceId) {
+		
+		$result = Array();
+		
+		// Return an empty array and stop processing if the ID does not exists
+		if (! IPS_InstanceExists($instanceId) ) {
+		
+			return $result;
+		}
+		
+		// IPS Information
+		$result['instanceId'] = $instanceId;
+		$result['instanceName'] = IPS_GetName($instanceId);
+		
+		// Instance configuration
+		$result['nodeId'] = $this->GetZwaveNodeId($instanceId);
+		
+		// Z-Wave Information
+		$zwaveInformationJson = ZW_GetInformation($instanceId);
+		$zwaveInformation = json_decode($zwaveInformationJson);
+		
+		if (isset($zwaveInformation->MultiChannelAssociationGroups) ) {
+			
+			$group = 0;
+			$multiChannelAssociationGroups = json_decode($zwaveInformation->MultiChannelAssociationGroups);
+			
+			foreach ($multiChannelAssociationGroups as $currentGroup) {
+				
+				$targetNodes = Array();
+				
+				foreach ($currentGroup->Nodes as $currentNode) {
+					
+					// Skip associations to only the main controller
+					if ($currentNode != 1) {
+						
+						$targetNodes[] = $currentNode;
+					}
+				}
+				
+				if (count($targetNodes) > 0) {
+					
+					$result['associationGroups'][$group] = $targetNodes;
+				}
+				
+				$group++;
+			}
+		}
+		
+		return $result;
+	}
+	
 	public function IsDeviceHealthy(int $instanceId) {
 		
 		// Return an empty array and stop processing if the ID does not exists
