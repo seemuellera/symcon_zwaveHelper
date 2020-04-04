@@ -40,7 +40,7 @@ class ZwaveHelper extends IPSModule {
 		$this->RegisterVariableInteger("DeviceHealthCrit","Healthy in State Critical");
 		
 		$this->RegisterVariableString("DeviceConfiguration","Device Configuration","~HTMLBox");
-		$this->RegisterVariableString("DeviceAssociations","Device Configuration","~HTMLBox");
+		$this->RegisterVariableString("DeviceAssociations","Device Associations","~HTMLBox");
 		
 		// Default Actions
 		// $this->EnableAction("Status");
@@ -327,6 +327,8 @@ class ZwaveHelper extends IPSModule {
 				}
 			}
 		}
+		
+		print_r($allZwaveDeviceAssociations);
 		
 		array_multisort(array_column($allZwaveDeviceAssociations, "nodeId"), SORT_ASC, $allZwaveDeviceAssociations );
 		
