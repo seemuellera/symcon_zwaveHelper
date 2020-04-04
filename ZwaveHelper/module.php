@@ -332,16 +332,19 @@ class ZwaveHelper extends IPSModule {
 		
 		foreach ($allZwaveDeviceAssociations as $currentDeviceAssociations) {
 		
-			$htmlOutput .= '<tr>';
-			$htmlOutput .= "<td>" . $currentDeviceAssociations['instanceName'] . "</td>";
-			$htmlOutput .= "<td>" . $currentDeviceAssociations['instanceId'] . "</td>";
-			$htmlOutput .= "<td>" . $currentDeviceAssociations['nodeId'] . "</td>";
-			foreach ($currentDeviceAssociations as $groupNumber => $targetNodeId) {
+			foreach ($currentDeviceAssociations as $groupNumber => $targetNodeIds) {
 				
-				$htmlOutput .= "<td>" . $groupNumber . "</td>";
-				$htmlOutput .= "<td>" . $targetNodeId . "</td>";
+				foreach ($targetNodeIds as $targetNodeId) {
+			
+					$htmlOutput .= '<tr>';
+					$htmlOutput .= "<td>" . $currentDeviceAssociations['instanceName'] . "</td>";
+					$htmlOutput .= "<td>" . $currentDeviceAssociations['instanceId'] . "</td>";
+					$htmlOutput .= "<td>" . $currentDeviceAssociations['nodeId'] . "</td>";			
+					$htmlOutput .= "<td>" . $groupNumber . "</td>";
+					$htmlOutput .= "<td>" . $targetNodeId . "</td>";
+					$htmlOutput .= '<tr>';
+				}
 			}
-			$htmlOutput .= '<tr>';
 		}
 		
 		$htmlOutput .= '</tbody>';
