@@ -366,7 +366,7 @@ class ZwaveHelper extends IPSModule {
 		
 		$allZwaveDevices = $this->GetAllDevices();
 		$allZwaveDeviceAssociations = Array();
-		
+	
 		foreach ($allZwaveDevices as $currentDevice) {
 			
 			$currentDeviceAssociations = $this->GetDeviceAssociations($currentDevice);
@@ -382,13 +382,24 @@ class ZwaveHelper extends IPSModule {
 		
 		array_multisort(array_column($allZwaveDeviceAssociations, "nodeId"), SORT_ASC, $allZwaveDeviceAssociations );
 		
+		$i = 1;
+		
 		foreach ($allZwaveDeviceAssociations as $currentDeviceAssociations) {
+			
+			if ( ($i % 2) == 1 ) {
+				
+				$color = '#333333';
+			}
+			else {
+				
+				$color = '#555555';
+			}
 		
 			foreach ($currentDeviceAssociations['associationGroups'] as $groupNumber => $targetNodeIds) {
 
 				foreach ($targetNodeIds as $targetNodeId) {
 			
-					$htmlOutput .= '<tr>';
+					$htmlOutput .= '<tr bgcolor="' . $color . '">';
 					$htmlOutput .= "<td>" . $currentDeviceAssociations['instanceName'] . "</td>";
 					$htmlOutput .= "<td>" . $currentDeviceAssociations['instanceId'] . "</td>";
 					$htmlOutput .= "<td>" . $currentDeviceAssociations['nodeId'] . "</td>";			
@@ -398,6 +409,8 @@ class ZwaveHelper extends IPSModule {
 					$htmlOutput .= '<tr>';
 				}
 			}
+			
+			$i++;
 		}
 		
 		$htmlOutput .= '</tbody>';
