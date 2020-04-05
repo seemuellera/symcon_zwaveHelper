@@ -298,6 +298,7 @@ class ZwaveHelper extends IPSModule {
 		$htmlOutput .= '<th>Manufacturer</th>';
 		$htmlOutput .= '<th>Product</th>';
 		$htmlOutput .= '<th>Application Version</th>';
+		$htmlOutput .= '<th>Serial Number</th>';
 		$htmlOutput .= '</tr>';
 		$htmlOutput .= '</thead>';
 
@@ -330,6 +331,7 @@ class ZwaveHelper extends IPSModule {
 			$htmlOutput .= "<td>" . $this->LookupManufacturerId($currentDeviceConfiguration['manufacturerId']) . "</td>";
 			$htmlOutput .= "<td>" . $this->LookupProductId($currentDeviceConfiguration['manufacturerId'], $currentDeviceConfiguration['productType'], $currentDeviceConfiguration['productId']) . "</td>";
 			$htmlOutput .= "<td>" . $currentDeviceConfiguration['applicationVersion'] . "</td>";
+			$htmlOutput .= "<td>" . $currentDeviceConfiguration['serialNumber'] . "</td>";
 			$htmlOutput .= '<tr>';
 		}
 		
@@ -554,6 +556,11 @@ class ZwaveHelper extends IPSModule {
 		if (isset($zwaveInformation->VersionApplication) ) {
 			
 			$result['applicationVersion'] = $zwaveInformation->VersionApplication;
+		}
+
+		if (isset($zwaveInformation->SerialNumber) ) {
+			
+			$result['serialNumber'] = $zwaveInformation->SerialNumber;
 		}
 		
 		return $result;
