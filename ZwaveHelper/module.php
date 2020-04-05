@@ -32,6 +32,11 @@ class ZwaveHelper extends IPSModule {
 		$this->RegisterPropertyInteger("RefreshInterval",0);
 		$this->RegisterPropertyInteger("WarningThreshold",10);
 		$this->RegisterPropertyInteger("CriticalThreshold",25);
+		$this->RegisterPropertyInteger("OptimizationInterval", 600);
+		$this->RegisterPropertyInteger("OptimizationTotalRuns", 4);
+		$this->RegisterPropertyInteger("OptimizationRuntime", 60);
+		$this->RegisterPropertyInteger("OptimizationCurrentInstance", 0);
+		$this->RegisterPropertyInteger("OptimizationCurrentRun", 1);
 		$this->RegisterPropertyBoolean("DebugOutput",false);
 		
 		// Variables
@@ -39,6 +44,7 @@ class ZwaveHelper extends IPSModule {
 		$this->RegisterVariableInteger("DeviceHealthOk","Devices in State Healthy");
 		$this->RegisterVariableInteger("DeviceHealthWarn","Devices in State Warning");
 		$this->RegisterVariableInteger("DeviceHealthCrit","Healthy in State Critical");
+		$this->RegisterVariableInteger("OptimizeBadClientSwitch","Optimize Bad client","~Switch");
 		
 		$this->RegisterVariableString("DeviceConfiguration","Device Configuration","~HTMLBox");
 		$this->RegisterVariableString("DeviceAssociations","Device Associations","~HTMLBox");
@@ -48,6 +54,7 @@ class ZwaveHelper extends IPSModule {
 
 		// Timer
 		$this->RegisterTimer("RefreshInformation", 0 , 'ZWHELPER_RefreshInformation($_IPS[\'TARGET\']);');
+		$this->RegisterTimer("OptimizeBadClient", 0 , 'ZWHELPER_OptimizeBadClient($_IPS[\'TARGET\']);');
 
     }
 
@@ -64,6 +71,8 @@ class ZwaveHelper extends IPSModule {
 		$newInterval = $this->ReadPropertyInteger("RefreshInterval") * 1000;
 		$this->SetTimerInterval("RefreshInformation", $newInterval);
 		
+		$newOptimizationInterval = $this->ReadPropertyInteger("OptimizationInterval") * 1000;
+		$this->SetTimerInterval("OptimizeBadClient", $newOptimizationInterval);
 
        	// Diese Zeile nicht löschen
        	parent::ApplyChanges();
@@ -84,9 +93,13 @@ class ZwaveHelper extends IPSModule {
 		$form['elements'][] = Array("type" => "CheckBox", "name" => "DebugOutput", "caption" => "Enable Debug Output");
 		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "WarningThreshold", "caption" => "Failed Packets - Warning Threshold");
 		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "CriticalThreshold", "caption" => "Failed Packets - Critical Threshold");
-
+		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "OptimizationInterval", "caption" => "Optimization Interval");
+		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "OptimizationTotalRuns", "caption" => "Optimization runs");
+		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "OptimizationRuntime", "caption" => "run time per optimization");
+	
 		// Add the buttons for the test center
 		$form['actions'][] = Array("type" => "Button", "label" => "Refresh Overall Status", "onClick" => 'ZWHELPER_RefreshInformation($id);');
+		$form['actions'][] = Array("type" => "Button", "label" => "Optimize bad clients", "onClick" => 'ZWHELPER_OptimizeBadClient($id);');
 		
 		// Return the completed form
 		return json_encode($form);
@@ -596,6 +609,25 @@ class ZwaveHelper extends IPSModule {
 		}
 		
 		return $devicesSorted;
+	}
+	
+	public function OptimizeBadClient($instanceId = 0) {
+		
+		if ($instanceId == 0) {
+			
+			// No specific instance was handed over, so we fetch a bad client from the list
+			$badClients = $this->GetDevicesWithFailedPackets($this->ReadPropertyInteger("CriticalThreshold") );
+			
+			if (count($badClients) == 0) {
+				
+				$this->LogMessage("No bad clients found.","DEBUG");
+				return;
+			}
+			else {
+				
+				$this->LogMessage("Bad clients found: " . count($badClients) . " / Optimizing the worst one: " . $badClients[0], "DEBUG");
+			}
+		}
 	}
 	
 	protected function GetZwaveNodeId($instanceId) {
