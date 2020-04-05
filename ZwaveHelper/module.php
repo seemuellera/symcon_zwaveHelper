@@ -851,7 +851,7 @@ class ZwaveHelper extends IPSModule {
 		
 		if (array_key_exists($instanceId)) {
 			
-			return $allDevices[$instanceId);
+			return $allDevices[$instanceId];
 		}
 		else {
 			
