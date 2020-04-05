@@ -615,11 +615,14 @@ class ZwaveHelper extends IPSModule {
 		
 		$instanceId = 0;
 		
+		// Fix this with the right sender
+		/*
 		if (GetValue($this->GetIDForIdent('OptimizeBadClientSwitch'))) {
 			
 			$this->LogMessage("Another optimization is already in progress. Aborting");
 			return;
 		}
+		*/
 		
 		if (GetValue($this->GetIDForIdent('OptimizeBadClientInstanceId')) != 0) {
 			
