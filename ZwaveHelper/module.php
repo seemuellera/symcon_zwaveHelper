@@ -652,6 +652,7 @@ class ZwaveHelper extends IPSModule {
 			SetValue($this->GetIDForIdent('OptimizeBadClientRun'), 0);
 			SetValue($this->GetIDForIdent('OptimizeBadClientSwitch'), false);
 			$this->SetTimerInterval("OptimizeBadClientRunTimer", 0);
+			ZW_ResetStatistics($instanceId);
 				
 			return;
 		}
