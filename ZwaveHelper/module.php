@@ -835,7 +835,7 @@ class ZwaveHelper extends IPSModule {
 
 		if ( ($manufacturerId == "010F") && ($productTypeId == "0102") && ($productId == "1000") ) {
 
-			$productName = "FGD-212";
+			$productName = "Dimmer 2";
 		}
 
 		if ( ($manufacturerId == "010F") && ($productTypeId == "0602") && ($productId == "1001") ) {
@@ -856,6 +856,11 @@ class ZwaveHelper extends IPSModule {
 		if ( ($manufacturerId == "0086") && ($productTypeId == "0003") && ($productId == "0074") ) {
 
 			$productName = "Nano Dimmer with energy metering";
+		}
+		
+		if ( ($manufacturerId == "0086") && ($productTypeId == "0002") && ($productId == "0070") ) {
+
+			$productName = "Door / Windows Sensor 6";
 		}
 
 		return $productName;
