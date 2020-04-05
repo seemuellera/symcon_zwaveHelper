@@ -836,7 +836,7 @@ class ZwaveHelper extends IPSModule {
 	
 	protected function SetLastDeviceOptimization(int $instanceId) {
 		
-		$allDevices = json_decode(GetValue($this->GetIDForIdent('LastOptimization')));
+		$allDevices = json_decode(GetValue($this->GetIDForIdent('LastOptimization')), true);
 		
 		$allDevices[$instanceId] = time();
 		
@@ -847,7 +847,7 @@ class ZwaveHelper extends IPSModule {
 	
 	protected function GetLastOptimization(int $instanceId) {
 		
-		$allDevices = json_decode(GetValue($this->GetIDForIdent('LastOptimization')));
+		$allDevices = json_decode(GetValue($this->GetIDForIdent('LastOptimization')), true);
 		
 		if (array_key_exists($instanceId)) {
 			
