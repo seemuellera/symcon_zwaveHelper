@@ -615,7 +615,7 @@ class ZwaveHelper extends IPSModule {
 		
 		$instanceId = 0;
 		
-		$this->LogMessage("Sender: " . $_IPS['Sender']);
+		$this->LogMessage("Sender: " . $_IPS['SENDER']);
 		
 		// Fix this with the right sender
 		/*
