@@ -615,6 +615,8 @@ class ZwaveHelper extends IPSModule {
 		
 		$instanceId = 0;
 		
+		$this->LogMessage("Sender: " . $_IPS['Sender']);
+		
 		// Fix this with the right sender
 		/*
 		if (GetValue($this->GetIDForIdent('OptimizeBadClientSwitch'))) {
