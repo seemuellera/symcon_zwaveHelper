@@ -52,7 +52,7 @@ class ZwaveHelper extends IPSModule {
 		
 		
 		// Default Actions
-		// $this->EnableAction("Status");
+		$this->EnableAction("OptimizeBadClientSwitch");
 
 		// Timer
 		$this->RegisterTimer("RefreshInformation", 0 , 'ZWHELPER_RefreshInformation($_IPS[\'TARGET\']);');
@@ -136,21 +136,20 @@ class ZwaveHelper extends IPSModule {
 	
 	public function RequestAction($Ident, $Value) {
 	
-		/*
 		switch ($Ident) {
 		
 			
-			case "Status":
+			case "OptimizeBadClientSwitch":
 				// Default Action for Status Variable
+				$this->OptimizeBadClient();
 				
 				// Neuen Wert in die Statusvariable schreiben
-				SetValue($this->GetIDForIdent($Ident), $Value);
+				// SetValue($this->GetIDForIdent($Ident), $Value);
 				break;
 			default:
 				throw new Exception("Invalid Ident");
 			
 		}
-		*/
 	}
 	
 	public function RefreshDeviceHealth() {
