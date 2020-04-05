@@ -315,6 +315,7 @@ class ZwaveHelper extends IPSModule {
 		$htmlOutput .= '<th>Product</th>';
 		$htmlOutput .= '<th>Application Version</th>';
 		$htmlOutput .= '<th>Serial Number</th>';
+		$htmlOutput .= '<th>Battery Device</th>';
 		$htmlOutput .= '</tr>';
 		$htmlOutput .= '</thead>';
 
@@ -363,6 +364,14 @@ class ZwaveHelper extends IPSModule {
 				}
 			}
 			$htmlOutput .= "<td>" . $currentDeviceConfiguration['serialNumber'] . "</td>";
+			if ($currentDeviceConfiguration['batteryDevice'] == 1) {
+				
+				$htmlOutput .= "<td>Battery Device</td>";
+			}
+			else {
+				
+				$htmlOutput .= "<td>&nbsp;</td>";
+			}
 			$htmlOutput .= '<tr>';
 		}
 		
@@ -601,6 +610,15 @@ class ZwaveHelper extends IPSModule {
 		if (isset($zwaveInformation->SerialNumber) ) {
 			
 			$result['serialNumber'] = $zwaveInformation->SerialNumber;
+		}
+		
+		if ($this->isBatteryDevice($instanceId)) {
+			
+			$result['batteryDevice'] = 1;
+		}
+		else {
+			
+			$result['batteryDevice'] = 0;
 		}
 		
 		return $result;
