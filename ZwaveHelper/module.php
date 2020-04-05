@@ -45,7 +45,8 @@ class ZwaveHelper extends IPSModule {
 		$this->RegisterVariableBoolean("OptimizeBadClientSwitch","Optimize bad client","~Switch");
 		$this->RegisterVariableInteger("OptimizeBadClientInstanceId","Optimize bad client instance id");
 		$this->RegisterVariableInteger("OptimizeBadClientRun","Optimize bad client run");
-		$this->RegisterVariableString("LastOptimization","Last Device Optimization","~HTMLBox");
+		$this->RegisterVariableString("LastOptimization","Last Device Optimization");
+		$this->RegisterVariableString("DesiredFirmwareVersions","Desired Firmware Versions");
 		
 		$this->RegisterVariableString("DeviceConfiguration","Device Configuration","~HTMLBox");
 		$this->RegisterVariableString("DeviceAssociations","Device Associations","~HTMLBox");
@@ -64,6 +65,12 @@ class ZwaveHelper extends IPSModule {
 			
 			SetValue($this->GetIDForIdent('LastOptimization'), "[]");
 			$this->LogMessage("The LastOptimization JSON was empty. Intializing it with an empty array.","DEBUG");
+		}
+		
+		if (! GetValue($this->GetIDForIdent('DesiredFirmwareVersions'))) {
+			
+			SetValue($this->GetIDForIdent('DesiredFirmwareVersions'), "[]");
+			$this->LogMessage("The DesiredFirmwareVersions JSON was empty. Intializing it with an empty array.","DEBUG");
 		}
 		
 		// Reset the status trackers if the module was updated during an execution
@@ -330,7 +337,22 @@ class ZwaveHelper extends IPSModule {
 			$htmlOutput .= "<td>" . $currentDeviceConfiguration['nodeSecureClassCount'] . "</td>";
 			$htmlOutput .= "<td>" . $this->LookupManufacturerId($currentDeviceConfiguration['manufacturerId']) . "</td>";
 			$htmlOutput .= "<td>" . $this->LookupProductId($currentDeviceConfiguration['manufacturerId'], $currentDeviceConfiguration['productType'], $currentDeviceConfiguration['productId']) . "</td>";
-			$htmlOutput .= "<td>" . $currentDeviceConfiguration['applicationVersion'] . "</td>";
+			$desiredFirmwareVersion = $this->GetDesiredFirmwareVersion($currentDeviceConfiguration['manufacturerId'], $currentDeviceConfiguration['productType'], $currentDeviceConfiguration['productId']);
+			if ($desiredFirmwareVersion == -1) {
+				
+				$htmlOutput .= "<td>" . $currentDeviceConfiguration['applicationVersion'] . "</td>";
+			}
+			else {
+				
+				if ($desiredFirmwareVersion == $currentDeviceConfiguration['applicationVersion']) {
+					
+					$htmlOutput .= '<td bgcolor="' . COLOR_OK . '">' . $currentDeviceConfiguration['applicationVersion'] . "</td>";
+				}
+				else {
+					
+					$htmlOutput .= '<td bgcolor="' . COLOR_WARN . '">' . $currentDeviceConfiguration['applicationVersion'] . "</td>";
+				}
+			}
 			$htmlOutput .= "<td>" . $currentDeviceConfiguration['serialNumber'] . "</td>";
 			$htmlOutput .= '<tr>';
 		}
@@ -933,6 +955,30 @@ class ZwaveHelper extends IPSModule {
 			
 			return 0;
 		}
+	}
+	
+	protected function GetDesiredFirmwareVersion($manufacturerId, $productTypeId, $productId) {
+		
+		$desiredFirmwareVersions = json_decode(GetValue($this->GetIDForIdent('DesiredFirmwareVersions')), true);
+		
+		$result = -1;
+		
+		if (! (array_key_exists($manufacturerId, $desiredFirmwareVersions))) {
+			
+			return $result;
+		}
+		
+		if (! (array_key_exists($productTypeId, $desiredFirmwareVersions[$manufacturerId]))) {
+			
+			return $result;
+		}
+		
+		if (! (array_key_exists($productId, $desiredFirmwareVersions[$manufacturerId][$productType]))) {
+			
+			return $result;
+		}
+		
+		return $desiredFirmwareVersions[$manufacturerId][$productType][$productId];
 	}
 }
 ?>
