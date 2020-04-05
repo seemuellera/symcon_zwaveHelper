@@ -670,7 +670,7 @@ class ZwaveHelper extends IPSModule {
 		return $devicesSorted;
 	}
 	
-	public function OptimizeBadClientEx($instanceId) {
+	public function OptimizeBadClientEx(int $instanceId) {
 		
 		// Check if the submitted instance ID is a Z-wave device
 		$allZwaveDevices = $this->GetAllDevices();
