@@ -137,11 +137,18 @@ class ZwaveHelper extends IPSModule {
 	public function RequestAction($Ident, $Value) {
 	
 		switch ($Ident) {
-		
-			
+				
 			case "OptimizeBadClientSwitch":
 				// Default Action for Status Variable
-				$this->OptimizeBadClient();
+				// Optimize a bad client when turning on:
+				if ($Value) {
+				
+					$this->OptimizeBadClient();
+				}
+				else {
+					
+					$this->LogMessage("Ignoring turning off request as it will turn off as soon as the optimization finishes","DEBUG");
+				}
 				
 				// Neuen Wert in die Statusvariable schreiben
 				// SetValue($this->GetIDForIdent($Ident), $Value);
