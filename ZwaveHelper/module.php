@@ -297,6 +297,7 @@ class ZwaveHelper extends IPSModule {
 		$htmlOutput .= '<th>Secure Classes</th>';
 		$htmlOutput .= '<th>Manufacturer</th>';
 		$htmlOutput .= '<th>Product</th>';
+		$htmlOutput .= '<th>Application Version</th>';
 		$htmlOutput .= '</tr>';
 		$htmlOutput .= '</thead>';
 
@@ -328,6 +329,7 @@ class ZwaveHelper extends IPSModule {
 			$htmlOutput .= "<td>" . $currentDeviceConfiguration['nodeSecureClassCount'] . "</td>";
 			$htmlOutput .= "<td>" . $this->LookupManufacturerId($currentDeviceConfiguration['manufacturerId']) . "</td>";
 			$htmlOutput .= "<td>" . $this->LookupProductId($currentDeviceConfiguration['manufacturerId'], $currentDeviceConfiguration['productType'], $currentDeviceConfiguration['productId']) . "</td>";
+			$htmlOutput .= "<td>" . $currentDeviceConfiguration['applicationVersion'] . "</td>";
 			$htmlOutput .= '<tr>';
 		}
 		
@@ -534,6 +536,11 @@ class ZwaveHelper extends IPSModule {
 		if (isset($zwaveInformation->ProductID) ) {
 			
 			$result['productId'] = $zwaveInformation->ProductID;
+		}
+		
+		if (isset($zwaveInformation->VersionApplication) ) {
+			
+			$result['applicationVersion'] = $zwaveInformation->VersionApplication;
 		}
 		
 		return $result;
