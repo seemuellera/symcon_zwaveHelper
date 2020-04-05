@@ -32,6 +32,7 @@ class ZwaveHelper extends IPSModule {
 		$this->RegisterPropertyInteger("RefreshInterval",0);
 		$this->RegisterPropertyInteger("WarningThreshold",10);
 		$this->RegisterPropertyInteger("CriticalThreshold",25);
+		$this->RegisterPropertyBoolean("DebugOutput",false);
 		
 		// Variables
 		$this->RegisterVariableString("DeviceHealth","Device Health","~HTMLBox");
@@ -80,6 +81,7 @@ class ZwaveHelper extends IPSModule {
 
 		// Add the Elements
 		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "RefreshInterval", "caption" => "Refresh Interval");
+		$form['elements'][] = Array("type" => "CheckBox", "name" => "DebugOutput", "caption" => "Enable Debug Output");
 		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "WarningThreshold", "caption" => "Failed Packets - Warning Threshold");
 		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "CriticalThreshold", "caption" => "Failed Packets - Critical Threshold");
 
@@ -93,7 +95,7 @@ class ZwaveHelper extends IPSModule {
 
 	public function RefreshInformation() {
 
-		IPS_LogMessage($_IPS['SELF'],"ZWHELPER - Refresh in progress");
+		$this->LogMessage("ZWHELPER - Refresh in progress");
 		
 		$this->RefreshDeviceHealth();
 		$this->RefreshDeviceConfiguration();
@@ -681,6 +683,18 @@ class ZwaveHelper extends IPSModule {
 		}
 
 		return $productName;
+	}
+	
+	protected function LogMessage($message, $severity = 'INFO') {
+		
+		if ( ($severity == 'DEBUG') && ($this->ReadPropertyBoolean('DebugOutput') == false )) {
+			
+			return;
+		}
+		
+		$messageComplete = $severity . " - " . $message;
+		
+		IPS_LogMessage($this->ReadPropertyString('Sender'), $messageComplete);
 	}
 }
 ?>
