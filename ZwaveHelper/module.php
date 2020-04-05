@@ -187,6 +187,7 @@ class ZwaveHelper extends IPSModule {
 		$htmlOutput .= '<th>Packets Received</th>';
 		$htmlOutput .= '<th>Packets Failed</th>';
 		$htmlOutput .= '<th>Last Optimization</th>';
+		$htmlOutput .= '<th>BatteryDevice</th>';
 		$htmlOutput .= '</tr>';
 		$htmlOutput .= '</thead>';
 
@@ -246,6 +247,14 @@ class ZwaveHelper extends IPSModule {
 			else {
 				
 				$htmlOutput .= '<td bgcolor="' . COLOR_OK . '">' . strftime("%Y-%m-%d %H:%M:%S",$currentDeviceHealth['lastOptimization']) . '</td>';
+			}
+			if ($currentDeviceHealth['batteryDevice'] == 1) {
+				
+				$htmlOutput .= "<td>Battery Device</td>";
+			}
+			else {
+				
+				$htmlOutput .= "<td>&nbsp;</td>";
 			}
 			$htmlOutput .= '</tr>';
 			
@@ -504,6 +513,15 @@ class ZwaveHelper extends IPSModule {
 		
 		// Optimization information
 		$result['lastOptimization'] = $this->GetLastOptimization($instanceId);
+		
+		if ($this->isBatteryDevice($instanceId)) {
+			
+			$result['batteryDevice'] = 1;
+		}
+		else {
+			
+			$result['batteryDevice'] = 0;
+		}
 		
 		return $result;
 	}
