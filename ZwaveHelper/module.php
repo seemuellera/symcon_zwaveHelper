@@ -32,7 +32,7 @@ class ZwaveHelper extends IPSModule {
 		$this->RegisterPropertyInteger("RefreshInterval",0);
 		$this->RegisterPropertyInteger("WarningThreshold",10);
 		$this->RegisterPropertyInteger("CriticalThreshold",25);
-		$this->RegisterPropertyInteger("OptimizationInterval", 600);
+		$this->RegisterPropertyInteger("OptimizationInterval", 0);
 		$this->RegisterPropertyInteger("OptimizationTotalRuns", 4);
 		$this->RegisterPropertyInteger("OptimizationRuntime", 60);
 		$this->RegisterPropertyBoolean("DebugOutput",false);
@@ -581,6 +581,34 @@ class ZwaveHelper extends IPSModule {
 		}
 	}
 	
+	public function isBatteryDevice(int $instanceId) {
+		
+		// Return an empty array and stop processing if the ID does not exists
+		if (! IPS_InstanceExists($instanceId) ) {
+		
+			return false;
+		}
+		
+		$zwaveInformationJson = ZW_GetInformation($instanceId);
+		$zwaveInformation = json_decode($zwaveInformationJson);
+	
+		if (isset($zwaveInformation->WakeUpInterval) ) {
+			
+			if ($zwaveInformation->WakeUpInterval != -1) {
+				
+				return true;
+			}
+			else {
+				
+				return false;
+			}
+		}
+		else {
+			
+			return false;
+		}
+	}
+	
 	public function GetDevicesWithFailedPackets(int $failedPacketThreshold) {
 		
 		$allZwaveDevices = $this->GetAllDevices();
@@ -663,6 +691,19 @@ class ZwaveHelper extends IPSModule {
 		
 		// Activating the timer if this is the first run:
 		if ($currentRun == 1) {
+			
+			// Don't do additional runs if the device is a battery device
+			if ($this->isBatteryDevice($instanceId)) {
+				
+				$this->LogMessage("The device is a battery device. The optimization will be added to the queue. No further runs will be executed.");
+				SetValue($this->GetIDForIdent('OptimizeBadClientInstanceId'), NULL);
+				SetValue($this->GetIDForIdent('OptimizeBadClientRun'), 0);
+				SetValue($this->GetIDForIdent('OptimizeBadClientSwitch'), false);
+				$this->SetTimerInterval("OptimizeBadClientRunTimer", 0);
+				ZW_ResetStatistics($instanceId);
+				
+				return;
+			}
 			
 			SetValue($this->GetIDForIdent('OptimizeBadClientSwitch'), true);
 			$newInterval = $this->ReadPropertyInteger("OptimizationRuntime") * 1000;
