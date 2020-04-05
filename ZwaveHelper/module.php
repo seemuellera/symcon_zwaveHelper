@@ -45,9 +45,11 @@ class ZwaveHelper extends IPSModule {
 		$this->RegisterVariableBoolean("OptimizeBadClientSwitch","Optimize bad client","~Switch");
 		$this->RegisterVariableInteger("OptimizeBadClientInstanceId","Optimize bad client instance id");
 		$this->RegisterVariableInteger("OptimizeBadClientRun","Optimize bad client run");
+		$this->RegisterVariableString("LastOptimization","Last Device Optimization","~HTMLBox");
 		
 		$this->RegisterVariableString("DeviceConfiguration","Device Configuration","~HTMLBox");
 		$this->RegisterVariableString("DeviceAssociations","Device Associations","~HTMLBox");
+		
 		
 		// Default Actions
 		// $this->EnableAction("Status");
@@ -56,6 +58,23 @@ class ZwaveHelper extends IPSModule {
 		$this->RegisterTimer("RefreshInformation", 0 , 'ZWHELPER_RefreshInformation($_IPS[\'TARGET\']);');
 		$this->RegisterTimer("OptimizeBadClient", 0 , 'ZWHELPER_OptimizeBadClient($_IPS[\'TARGET\']);');
 		$this->RegisterTimer("OptimizeBadClientRunTimer", 0 , 'ZWHELPER_OptimizeBadClient($_IPS[\'TARGET\']);');
+		
+		// Initialize the empty Json
+		if (! GetValue($this->GetIDForIdent('LastOptimization'))) {
+			
+			SetValue($this->GetIDForIdent('LastOptimization'), "[]");
+			$this->LogMessage("The LastOptimization JSON was empty. Intializing it with an empty array.","DEBUG");
+		}
+		
+		// Reset the status trackers if the module was updated during an execution
+		if (GetValue($this->GetIDForIdent('OptimizeBadClientSwitch'))) {
+			
+			$this->LogMessage("It seems the device was updated during a running optimization. Cancelling the optimization.","DEBUG");
+			SetValue($this->GetIDForIdent('OptimizeBadClientInstanceId'), NULL);
+			SetValue($this->GetIDForIdent('OptimizeBadClientRun'), 0);
+			SetValue($this->GetIDForIdent('OptimizeBadClientSwitch'), false);
+			$this->SetTimerInterval("OptimizeBadClientRunTimer", 0);
+		}
     }
 
 	public function Destroy() {
@@ -679,6 +698,7 @@ class ZwaveHelper extends IPSModule {
 			SetValue($this->GetIDForIdent('OptimizeBadClientSwitch'), false);
 			$this->SetTimerInterval("OptimizeBadClientRunTimer", 0);
 			ZW_ResetStatistics($instanceId);
+			$this->SetLastDeviceOptimization($instanceId);
 				
 			return;
 		}
@@ -699,6 +719,7 @@ class ZwaveHelper extends IPSModule {
 				SetValue($this->GetIDForIdent('OptimizeBadClientSwitch'), false);
 				$this->SetTimerInterval("OptimizeBadClientRunTimer", 0);
 				ZW_ResetStatistics($instanceId);
+				$this->SetLastDeviceOptimization($instanceId);
 				
 				return;
 			}
@@ -811,6 +832,31 @@ class ZwaveHelper extends IPSModule {
 		$messageComplete = $severity . " - " . $message;
 		
 		IPS_LogMessage($this->ReadPropertyString('Sender'), $messageComplete);
+	}
+	
+	protected function SetLastDeviceOptimization(int $instanceId) {
+		
+		$allDevices = json_decode(GetValue($this->GetIDForIdent('LastOptimization')));
+		
+		$allDevices[$instanceId] = time();
+		
+		SetValue($this->GetIDForIdent('LastOptimization'), json_encode($allDevices));
+		
+		return true;
+	}
+	
+	protected function GetLastOptimization(int $instanceId) {
+		
+		$allDevices = json_decode(GetValue($this->GetIDForIdent('LastOptimization')));
+		
+		if (array_key_exists($instanceId)) {
+			
+			return $allDevices[$instanceId);
+		}
+		else {
+			
+			return 0;
+		}
 	}
 }
 ?>
