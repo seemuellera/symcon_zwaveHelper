@@ -611,7 +611,9 @@ class ZwaveHelper extends IPSModule {
 		return $devicesSorted;
 	}
 	
-	public function OptimizeBadClient(int $instanceId = 0) {
+	public function OptimizeBadClient() {
+		
+		$instanceId = 0;
 		
 		if ($instanceId == 0) {
 			
