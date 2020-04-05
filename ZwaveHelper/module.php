@@ -44,7 +44,7 @@ class ZwaveHelper extends IPSModule {
 		$this->RegisterVariableInteger("DeviceHealthOk","Devices in State Healthy");
 		$this->RegisterVariableInteger("DeviceHealthWarn","Devices in State Warning");
 		$this->RegisterVariableInteger("DeviceHealthCrit","Healthy in State Critical");
-		$this->RegisterVariableInteger("OptimizeBadClientSwitch","Optimize Bad client","~Switch");
+		$this->RegisterVariableBoolean("OptimizeBadClientSwitch","Optimize Bad client","~Switch");
 		
 		$this->RegisterVariableString("DeviceConfiguration","Device Configuration","~HTMLBox");
 		$this->RegisterVariableString("DeviceAssociations","Device Associations","~HTMLBox");
