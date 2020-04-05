@@ -675,7 +675,7 @@ class ZwaveHelper extends IPSModule {
 		// Check if the submitted instance ID is a Z-wave device
 		$allZwaveDevices = $this->GetAllDevices();
 		
-		if(! in_array($instanceId, $allDevices)) {
+		if(! in_array($instanceId, $allZwaveDevices)) {
 			
 			$this->LogMessage("The provided instance ID is not a Z-Wave device","ERROR");
 			return false;
