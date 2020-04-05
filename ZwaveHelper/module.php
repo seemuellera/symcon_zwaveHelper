@@ -980,5 +980,16 @@ class ZwaveHelper extends IPSModule {
 		
 		return $desiredFirmwareVersions[$manufacturerId][$productTypeId][$productId];
 	}
+	
+	public function SetDesiredFirmwareVersion(string $manufacturerId, string $productTypeId, string $productId, string $desiredFirmwareVersion) {
+	
+		$desiredFirmwareVersions = json_decode(GetValue($this->GetIDForIdent('DesiredFirmwareVersions')), true);
+		
+		$desiredFirmwareVersions[$manufacturerId][$productTypeId][$productId] = $desiredFirmwareVersion;
+		
+		SetValue($this->GetIDForIdent('DesiredFirmwareVersions'), json_encode($desiredFirmwareVersions));
+		
+		return true;
+	}
 }
 ?>
