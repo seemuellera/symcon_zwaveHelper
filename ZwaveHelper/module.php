@@ -643,8 +643,6 @@ class ZwaveHelper extends IPSModule {
 		
 		$instanceId = 0;
 		
-		$this->LogMessage("Sender: " . $_IPS['SENDER']);
-		
 		if ( (GetValue($this->GetIDForIdent('OptimizeBadClientSwitch'))) && ($_IPS['SENDER'] != "TimerEvent") ) {
 			
 			$this->LogMessage("Another optimization is already in progress. Aborting");
