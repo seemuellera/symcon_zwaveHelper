@@ -173,6 +173,7 @@ class ZwaveHelper extends IPSModule {
 		$htmlOutput .= '<th>Packets Sent</th>';
 		$htmlOutput .= '<th>Packets Received</th>';
 		$htmlOutput .= '<th>Packets Failed</th>';
+		$htmlOutput .= '<th>Last Optimization</th>';
 		$htmlOutput .= '</tr>';
 		$htmlOutput .= '</thead>';
 
@@ -224,6 +225,14 @@ class ZwaveHelper extends IPSModule {
 					
 					$htmlOutput .= '<td bgcolor="' . COLOR_WARN . '">' . $currentDeviceHealth['packetsFailed'] . '</td>';
 				}
+			}
+			if ($currentDeviceHealth['lastOptimization'] == 0) {
+				
+					$htmlOutput .= '<td bgcolor="' . COLOR_WARN . '">never</td>';
+			}
+			else {
+				
+				$htmlOutput .= '<td bgcolor="' . COLOR_OK . '">' . strftime("%Y-%m-%d %H:%M:%S",$currentDeviceHealth['lastOptimization']) . '</td>';
 			}
 			$htmlOutput .= '</tr>';
 			
@@ -447,6 +456,9 @@ class ZwaveHelper extends IPSModule {
 			
 			$result['packetsFailed'] = $zwaveInformation->NodePacketFailed;
 		}
+		
+		// Optimization information
+		$result['lastOptimization'] = $this->GetLastOptimization($instanceId);
 		
 		return $result;
 	}
