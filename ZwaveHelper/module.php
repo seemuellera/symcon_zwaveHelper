@@ -973,12 +973,12 @@ class ZwaveHelper extends IPSModule {
 			return $result;
 		}
 		
-		if (! (array_key_exists($productId, $desiredFirmwareVersions[$manufacturerId][$productType]))) {
+		if (! (array_key_exists($productId, $desiredFirmwareVersions[$manufacturerId][$productTypeId]))) {
 			
 			return $result;
 		}
 		
-		return $desiredFirmwareVersions[$manufacturerId][$productType][$productId];
+		return $desiredFirmwareVersions[$manufacturerId][$productTypeId][$productId];
 	}
 }
 ?>
