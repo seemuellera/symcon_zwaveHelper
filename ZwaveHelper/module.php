@@ -631,7 +631,7 @@ class ZwaveHelper extends IPSModule {
 		return $manufacturerName;
 	}
 	
-	public function GetInstanceId($nodeId) {
+	public function GetInstanceId(int $nodeId) {
 		
 		$allZwaveDevices = $this->GetAllDevices();
 		
