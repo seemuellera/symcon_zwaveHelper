@@ -869,6 +869,11 @@ class ZwaveHelper extends IPSModule {
 
 			$productName = "Door / Windows Sensor 6";
 		}
+		
+		if ( ($manufacturerId == "0086") && ($productTypeId == "0002") && ($productId == "0064") ) {
+
+			$productName = "MultiSensor 6";
+		}
 
 		return $productName;
 	}
