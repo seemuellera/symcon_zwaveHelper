@@ -670,6 +670,27 @@ class ZwaveHelper extends IPSModule {
 		return $devicesSorted;
 	}
 	
+	public function OptimizeBadClientEx($instanceId) {
+		
+		// Check if the submitted instance ID is a Z-wave device
+		$allZwaveDevices = $this->GetAllDevices();
+		
+		if(! in_array($instanceId, $allDevices)) {
+			
+			$this->LogMessage("The provided instance ID is not a Z-Wave device","ERROR");
+			return false;
+		}
+		
+		if (GetValue($this->GetIDForIdent('OptimizeBadClientSwitch')))) {
+			
+			$this->LogMessage("Another optimization is already in progress. Aborting","ERROR");
+			return false;
+		}
+		
+		SetValue($this->GetIDForIdent('OptimizeBadClientInstanceId'), $instanceId);
+		$this->OptimizeBadClient();
+	}
+	
 	public function OptimizeBadClient() {
 		
 		$instanceId = 0;
