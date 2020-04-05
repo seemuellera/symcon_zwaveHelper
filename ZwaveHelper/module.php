@@ -35,8 +35,6 @@ class ZwaveHelper extends IPSModule {
 		$this->RegisterPropertyInteger("OptimizationInterval", 600);
 		$this->RegisterPropertyInteger("OptimizationTotalRuns", 4);
 		$this->RegisterPropertyInteger("OptimizationRuntime", 60);
-		$this->RegisterPropertyInteger("OptimizationCurrentInstance", 0);
-		$this->RegisterPropertyInteger("OptimizationCurrentRun", 1);
 		$this->RegisterPropertyBoolean("DebugOutput",false);
 		
 		// Variables
@@ -44,7 +42,9 @@ class ZwaveHelper extends IPSModule {
 		$this->RegisterVariableInteger("DeviceHealthOk","Devices in State Healthy");
 		$this->RegisterVariableInteger("DeviceHealthWarn","Devices in State Warning");
 		$this->RegisterVariableInteger("DeviceHealthCrit","Healthy in State Critical");
-		$this->RegisterVariableBoolean("OptimizeBadClientSwitch","Optimize Bad client","~Switch");
+		$this->RegisterVariableBoolean("OptimizeBadClientSwitch","Optimize bad client","~Switch");
+		$this->RegisterVariableInteger("OptimizeBadClientInstanceId","Optimize bad client instance id");
+		$this->RegisterVariableInteger("OptimizeBadClientRun","Optimize bad client run");
 		
 		$this->RegisterVariableString("DeviceConfiguration","Device Configuration","~HTMLBox");
 		$this->RegisterVariableString("DeviceAssociations","Device Associations","~HTMLBox");
@@ -55,7 +55,7 @@ class ZwaveHelper extends IPSModule {
 		// Timer
 		$this->RegisterTimer("RefreshInformation", 0 , 'ZWHELPER_RefreshInformation($_IPS[\'TARGET\']);');
 		$this->RegisterTimer("OptimizeBadClient", 0 , 'ZWHELPER_OptimizeBadClient($_IPS[\'TARGET\']);');
-
+		$this->RegisterTimer("OptimizeBadClientRunTimer", 0 , 'ZWHELPER_OptimizeBadClient($_IPS[\'TARGET\']);');
     }
 
 	public function Destroy() {
@@ -615,6 +615,17 @@ class ZwaveHelper extends IPSModule {
 		
 		$instanceId = 0;
 		
+		if (GetValue($this->GetIDForIdent('OptimizeBadClientSwitch'))) {
+			
+			$this->LogMessage("Another optimization is already in progress. Aborting");
+			return;
+		}
+		
+		if (GetValue($this->GetIDForIdent('OptimizeBadClientInstanceId')) != 0) {
+			
+			$instanceId = GetValue($this->GetIDForIdent('OptimizeBadClientInstanceId'));
+		}
+		
 		if ($instanceId == 0) {
 			
 			// No specific instance was handed over, so we fetch a bad client from the list
@@ -628,8 +639,36 @@ class ZwaveHelper extends IPSModule {
 			else {
 				
 				$this->LogMessage("Bad clients found: " . count($badClients) . " / Optimizing the worst one: " . $badClients[0], "DEBUG");
+				$instanceId = $badClients[0];
 			}
 		}
+		
+		if (GetValue($this->GetIDForIdent('OptimizeBadClientRun')) >= $this->ReadPropertyInteger('OptimizationTotalRuns') ) {
+			
+			$this->LogMessage("Optimization for instance $instanceId / " . IPS_GetName($instanceId) . " / Z-Wave Node ID: " . $this->GetZwaveNodeId($instanceId) . " is complete");
+			SetValue($this->GetIDForIdent('OptimizeBadClientInstanceId'), NULL);
+			SetValue($this->GetIDForIdent('OptimizeBadClientRun'), 0);
+			SetValue($this->GetIDForIdent('OptimizeBadClientSwitch'), false);
+			$this->SetTimerInterval("OptimizeBadClientRunTimer", 0);
+				
+			return;
+		}
+		
+		$lastRun = GetValue($this->GetIDForIdent('OptimizeBadClientRun'));
+		$currentRun = $lastRun + 1;
+		$this->LogMessage("Starting Optimization for instance $instanceId / " . IPS_GetName($instanceId) . " / Z-Wave Node ID: " . $this->GetZwaveNodeId($instanceId) . " / run $currentRun of " . $this->ReadPropertyInteger('OptimizationTotalRuns'));
+		
+		// Activating the timer if this is the first run:
+		if ($currentRun == 1) {
+			
+			SetValue($this->GetIDForIdent('OptimizeBadClientSwitch'), true);
+			$newInterval = $this->ReadPropertyInteger("OptimizationRuntime") * 1000;
+			$this->SetTimerInterval("OptimizeBadClientRunTimer", $newInterval);
+		}
+
+		ZW_Optimize($instanceId);
+		
+		SetValue($this->GetIDForIdent('OptimizeBadClientRun'), $currentRun);
 	}
 	
 	protected function GetZwaveNodeId($instanceId) {
