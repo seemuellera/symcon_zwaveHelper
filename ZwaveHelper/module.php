@@ -861,7 +861,7 @@ class ZwaveHelper extends IPSModule {
 		
 		$allDevices = json_decode(GetValue($this->GetIDForIdent('LastOptimization')), true);
 		
-		if (array_key_exists($instanceId)) {
+		if (array_key_exists($instanceId, $allDevices)) {
 			
 			return $allDevices[$instanceId];
 		}
