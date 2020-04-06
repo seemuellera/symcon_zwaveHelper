@@ -552,6 +552,8 @@ class ZwaveHelper extends IPSModule {
 		
 		// Wakeup Queue Information
 		if ($this->isBatteryDevice($instanceId)) {
+			
+			$this->LogMessage('Processing device ' . $instanceId, 'DEBUG');
 		
 			$wakeupQueue = ZW_GetWakeUpQueue($instanceId);
 		
