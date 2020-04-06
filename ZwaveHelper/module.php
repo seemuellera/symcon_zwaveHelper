@@ -187,7 +187,9 @@ class ZwaveHelper extends IPSModule {
 		$htmlOutput .= '<th>Packets Received</th>';
 		$htmlOutput .= '<th>Packets Failed</th>';
 		$htmlOutput .= '<th>Last Optimization</th>';
+		$htmlOutput .= '<th>Optimization Queued</th>';
 		$htmlOutput .= '<th>BatteryDevice</th>';
+		$htmlOutput .= '<th>Queue Length</th>';
 		$htmlOutput .= '</tr>';
 		$htmlOutput .= '</thead>';
 
@@ -248,9 +250,25 @@ class ZwaveHelper extends IPSModule {
 				
 				$htmlOutput .= '<td bgcolor="' . COLOR_OK . '">' . strftime("%Y-%m-%d %H:%M:%S",$currentDeviceHealth['lastOptimization']) . '</td>';
 			}
+			if ($currentDeviceHealth['wakeupQueueOptimization'] == 1) {
+				
+				$htmlOutput .= "<td>Queued</td>";
+			}
+			else {
+				
+				$htmlOutput .= "<td>&nbsp;</td>";
+			}
 			if ($currentDeviceHealth['batteryDevice'] == 1) {
 				
 				$htmlOutput .= "<td>Battery Device</td>";
+			}
+			else {
+				
+				$htmlOutput .= "<td>&nbsp;</td>";
+			}
+			if ($currentDeviceHealth['wakeupQueueLength'] >= 0) {
+				
+				$htmlOutput .= "<td>" . $currentDeviceHealth['wakeupQueueLength'] . "</td>";
 			}
 			else {
 				
@@ -530,6 +548,28 @@ class ZwaveHelper extends IPSModule {
 		else {
 			
 			$result['batteryDevice'] = 0;
+		}
+		
+		// Wakeup Queue Information
+		if ($this->isBatteryDevice($instanceId)) {
+		
+			$wakeupQueue = ZW_GetWakeUpQueue($instanceId);
+		
+			$result['wakeupQueueLength'] = count($wakeupQueue);
+			
+			if (in_array('Optimize', $wakeupQueue)) {
+				
+				$result['wakeupQueueOptimization'] = 1;
+			}
+			else {
+				
+				$result['wakeupQueueOptimization'] = 0;
+			}
+		}
+		else {
+			
+			$result['wakeupQueueLength'] = -1;
+			$result['wakeupQueueOptimization'] = -1;
 		}
 		
 		return $result;
