@@ -552,8 +552,6 @@ class ZwaveHelper extends IPSModule {
 		
 		// Wakeup Queue Information
 		if ($this->isBatteryDevice($instanceId)) {
-			
-			$this->LogMessage('Processing device ' . $instanceId, 'DEBUG');
 		
 			$wakeupQueue = ZW_GetWakeUpQueue($instanceId);
 		
@@ -879,12 +877,24 @@ class ZwaveHelper extends IPSModule {
 			// Don't do additional runs if the device is a battery device
 			if ($this->isBatteryDevice($instanceId)) {
 				
-				$this->LogMessage("The device is a battery device. The optimization will be added to the queue. No further runs will be executed.");
+				// Try to find out if another optimization is already queued
+				$wakeupQueue = ZW_GetWakeUpQueue($instanceId);
+			
+				if (in_array('Optimize', $wakeupQueue)) {
+				
+					$this->LogMessage("The device is a battery device. A second optimization will not be added to the list. No further runs will be executed.");					
+				}
+				else {
+				
+					$this->LogMessage("The device is a battery device. The optimization will be added to the queue. No further runs will be executed.");					
+					ZW_ResetStatistics($instanceId);
+				}
+				
 				SetValue($this->GetIDForIdent('OptimizeBadClientInstanceId'), NULL);
 				SetValue($this->GetIDForIdent('OptimizeBadClientRun'), 0);
 				SetValue($this->GetIDForIdent('OptimizeBadClientSwitch'), false);
 				$this->SetTimerInterval("OptimizeBadClientRunTimer", 0);
-				ZW_ResetStatistics($instanceId);
+				
 				$this->SetLastDeviceOptimization($instanceId);
 				
 				return;
