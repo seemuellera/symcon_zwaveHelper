@@ -758,7 +758,17 @@ class ZwaveHelper extends IPSModule {
 			
 			if ($zwaveInformation->WakeUpInterval != -1) {
 				
-				return true;
+				// Check if the device is  a battery device from the class configuration
+				$classList = json_decode($zwaveInformation->NodeClasses, true);
+				
+				if (in_array(hexdec(80), $classList)) {
+					
+						return true;
+				}
+				else {
+					
+					return false;
+				}
 			}
 			else {
 				
