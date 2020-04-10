@@ -186,6 +186,7 @@ class ZwaveHelper extends IPSModule {
 		$htmlOutput .= '<th>Packets Sent</th>';
 		$htmlOutput .= '<th>Packets Received</th>';
 		$htmlOutput .= '<th>Packets Failed</th>';
+		$htmlOutput .= '<th>Packets Failed Ratio</th>';
 		$htmlOutput .= '<th>Last Optimization</th>';
 		$htmlOutput .= '<th>Optimization Queued</th>';
 		$htmlOutput .= '<th>BatteryDevice</th>';
@@ -242,6 +243,7 @@ class ZwaveHelper extends IPSModule {
 					$htmlOutput .= '<td bgcolor="' . COLOR_WARN . '">' . $currentDeviceHealth['packetsFailed'] . '</td>';
 				}
 			}
+			$htmlOutput .= "<td>" . $currentDeviceHealth['packetsErrorRate'] . "%</td>";
 			if ($currentDeviceHealth['lastOptimization'] == 0) {
 				
 					$htmlOutput .= '<td bgcolor="' . COLOR_WARN . '">never</td>';
@@ -536,6 +538,15 @@ class ZwaveHelper extends IPSModule {
 		if (isset($zwaveInformation->NodePacketFailed) ) {
 			
 			$result['packetsFailed'] = $zwaveInformation->NodePacketFailed;
+		}
+		
+		if (isset($zwaveInformation->NodePacketSend) && isset($zwaveInformation->NodePacketReceived) && isset($zwaveInformation->NodePacketFailed) ) {
+			
+			$packetsTotal = intval($zwaveInformation->NodePacketSend) + intval($zwaveInformation->NodePacketReceived) + intval($zwaveInformation->NodePacketFailed);
+			
+			$errorRate = intval($zwaveInformation->NodePacketFailed) / $packetsTotal * 100;
+			
+			$result['packetsErrorRate'] = round($errorRate,2);
 		}
 		
 		// Optimization information
