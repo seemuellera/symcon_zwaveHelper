@@ -331,6 +331,8 @@ class ZwaveHelper extends IPSModule {
 		$htmlOutput .= '<th>Instance Name</th>';
 		$htmlOutput .= '<th>Instance ID</th>';
 		$htmlOutput .= '<th>Z-Wave Node ID</th>';
+		$htmlOutput .= '<th>Direct Route to Controller</th>';
+		$htmlOutput .= '<th>Number of neighbours</th>';
 		$htmlOutput .= '</tr>';
 		$htmlOutput .= '</thead>';
 
@@ -350,7 +352,7 @@ class ZwaveHelper extends IPSModule {
 			}
 		}
 		
-		array_multisort(array_column($allZwaveDeviceRoutings, "nodeId"), SORT_ASC, $allZwaveDeviceRoutings );
+		array_multisort(array_column($allZwaveDeviceRoutings, "direct"), SORT_DESC, $allZwaveDeviceRoutings );
 		
 		foreach ($allZwaveDeviceRoutings as $currentDeviceRouting) {
 		
@@ -358,6 +360,15 @@ class ZwaveHelper extends IPSModule {
 			$htmlOutput .= "<td>" . $currentDeviceRouting['instanceName'] . "</td>";
 			$htmlOutput .= "<td>" . $currentDeviceRouting['instanceId'] . "</td>";
 			$htmlOutput .= "<td>" . $currentDeviceRouting['nodeId'] . "</td>";
+			if ($currentDeviceRouting['direct'] == 1) {
+				
+				$htmlOutput .= "<td>DIRECT</td>";
+			}
+			else {
+				
+				$htmlOutput .= "<td>&nbsp;</td>";
+			}
+			$htmlOutput .= "<td>" . $currentDeviceRouting['count'] . "</td>";
 			$htmlOutput .= '<tr>';
 		}
 		
@@ -656,6 +667,20 @@ class ZwaveHelper extends IPSModule {
 		
 		// Instance configuration
 		$result['nodeId'] = $this->GetZwaveNodeId($instanceId);
+		
+		// Routing information
+		$routingList = ZW_RequestRoutingList($instanceId, false, false);
+		
+		if (in_array(0, $routingList) ) {
+			
+			$result['direct'] = 1;
+		}
+		else {
+			
+			$result['direct'] = 0;
+		}
+		
+		$result['count'] = count($routingList);
 		
 		return $result;
 	}
