@@ -613,9 +613,15 @@ class ZwaveHelper extends IPSModule {
 			
 			$packetsTotal = intval($zwaveInformation->NodePacketSend) + intval($zwaveInformation->NodePacketReceived) + intval($zwaveInformation->NodePacketFailed);
 			
-			$errorRate = intval($zwaveInformation->NodePacketFailed) / $packetsTotal * 100;
+			if ($packetsTotal > 0) {
 			
-			$result['packetsErrorRate'] = round($errorRate,2);
+				$errorRate = intval($zwaveInformation->NodePacketFailed) / $packetsTotal * 100;
+				$result['packetsErrorRate'] = round($errorRate,2);
+			}
+			else {
+				
+				$result['packetsErrorRate'] = 0;
+			}
 		}
 		
 		// Optimization information
@@ -699,9 +705,15 @@ class ZwaveHelper extends IPSModule {
 			
 			$packetsTotal = intval($zwaveInformation->NodePacketSend) + intval($zwaveInformation->NodePacketReceived) + intval($zwaveInformation->NodePacketFailed);
 			
-			$errorRate = intval($zwaveInformation->NodePacketFailed) / $packetsTotal * 100;
-			
-			$result['packetsErrorRate'] = round($errorRate,2);
+			if ($packetsTotal > 0 ) {
+				
+				$errorRate = intval($zwaveInformation->NodePacketFailed) / $packetsTotal * 100;
+				$result['packetsErrorRate'] = round($errorRate,2);
+			}
+			else {
+				
+				$result['packetsErrorRate'] = 0;
+			}
 		}
 		
 		return $result;
