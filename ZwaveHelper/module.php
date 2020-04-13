@@ -671,7 +671,7 @@ class ZwaveHelper extends IPSModule {
 		// Routing information
 		$routingList = ZW_RequestRoutingList($instanceId, false, false);
 		
-		if (in_array(0, $routingList) ) {
+		if (in_array(1, $routingList) ) {
 			
 			$result['direct'] = 1;
 		}
