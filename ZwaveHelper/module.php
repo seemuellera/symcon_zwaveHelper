@@ -50,6 +50,7 @@ class ZwaveHelper extends IPSModule {
 		
 		$this->RegisterVariableString("DeviceConfiguration","Device Configuration","~HTMLBox");
 		$this->RegisterVariableString("DeviceAssociations","Device Associations","~HTMLBox");
+		$this->RegisterVariableString("DeviceRouting","Device Routing","~HTMLBox");
 		
 		
 		// Default Actions
@@ -139,6 +140,7 @@ class ZwaveHelper extends IPSModule {
 		$this->RefreshDeviceHealth();
 		$this->RefreshDeviceConfiguration();
 		$this->RefreshDeviceAssociations();
+		$this->RefreshDeviceRouting();
 	}
 	
 	public function RequestAction($Ident, $Value) {
@@ -313,6 +315,58 @@ class ZwaveHelper extends IPSModule {
 		SetValue($this->GetIDForIdent('DeviceHealthOk'), $devicesHealthy);
 		SetValue($this->GetIDForIdent('DeviceHealthWarn'), $devicesWarning);
 		SetValue($this->GetIDForIdent('DeviceHealthCrit'), $devicesCritical);
+		
+		return true;
+	}
+	
+	public function RefreshDeviceRouting() {
+				
+		$htmlOutput = '';
+		
+		$htmlOutput .= '<table border="1px">';
+		
+		// Headings
+		$htmlOutput .= '<thead>';
+		$htmlOutput .= '<tr>';
+		$htmlOutput .= '<th>Instance Name</th>';
+		$htmlOutput .= '<th>Instance ID</th>';
+		$htmlOutput .= '<th>Z-Wave Node ID</th>';
+		$htmlOutput .= '</tr>';
+		$htmlOutput .= '</thead>';
+
+		// Content
+		$htmlOutput .= '<tbody>';
+		
+		$allZwaveDevices = $this->GetAllDevices();
+		$allZwaveDeviceRoutings = Array();
+		
+		foreach ($allZwaveDevices as $currentDevice) {
+			
+			$currentDeviceRouting = $this->GetDeviceRouting($currentDevice);
+			
+			if (count($currentDeviceRouting) > 0) {
+				
+				$allZwaveDeviceRoutings[] = $currentDeviceRouting;
+			}
+		}
+		
+		array_multisort(array_column($allZwaveDeviceRoutings, "nodeId"), SORT_ASC, $allZwaveDeviceRoutings );
+		
+		foreach ($allZwaveDeviceRoutings as $currentDeviceRouting) {
+		
+			$htmlOutput .= '<tr>';
+			$htmlOutput .= "<td>" . $currentDeviceRouting['instanceName'] . "</td>";
+			$htmlOutput .= "<td>" . $currentDeviceRouting['instanceId'] . "</td>";
+			$htmlOutput .= "<td>" . $currentDeviceRouting['nodeId'] . "</td>";
+			$htmlOutput .= '<tr>';
+		}
+		
+		$htmlOutput .= '</tbody>';
+		
+		$htmlOutput .= '</table>';
+		
+		// Save the result to a variable
+		SetValue($this->GetIDForIdent('DeviceRouting'), $htmlOutput);
 		
 		return true;
 	}
@@ -582,6 +636,26 @@ class ZwaveHelper extends IPSModule {
 			$result['wakeupQueueLength'] = -1;
 			$result['wakeupQueueOptimization'] = -1;
 		}
+		
+		return $result;
+	}
+	
+	public function GetDeviceRouting(int $instanceId) {
+		
+		$result = Array();
+		
+		// Return an empty array and stop processing if the ID does not exists
+		if (! IPS_InstanceExists($instanceId) ) {
+		
+			return $result;
+		}
+		
+		// IPS Information
+		$result['instanceId'] = $instanceId;
+		$result['instanceName'] = IPS_GetName($instanceId);
+		
+		// Instance configuration
+		$result['nodeId'] = $this->GetZwaveNodeId($instanceId);
 		
 		return $result;
 	}
