@@ -333,6 +333,8 @@ class ZwaveHelper extends IPSModule {
 		$htmlOutput .= '<th>Z-Wave Node ID</th>';
 		$htmlOutput .= '<th>Direct Route to Controller</th>';
 		$htmlOutput .= '<th>Number of neighbours</th>';
+		$htmlOutput .= '<th>Number of failed packets</th>';
+		$htmlOutput .= '<th>Error rate</th>';
 		$htmlOutput .= '</tr>';
 		$htmlOutput .= '</thead>';
 
@@ -369,6 +371,8 @@ class ZwaveHelper extends IPSModule {
 				$htmlOutput .= "<td>&nbsp;</td>";
 			}
 			$htmlOutput .= "<td>" . $currentDeviceRouting['count'] . "</td>";
+			$htmlOutput .= "<td>" . $currentDeviceRouting['packetsFailed'] . "</td>";
+			$htmlOutput .= "<td>" . $currentDeviceRouting['packetsErrorRate'] . "</td>";
 			$htmlOutput .= '<tr>';
 		}
 		
