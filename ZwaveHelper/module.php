@@ -682,6 +682,24 @@ class ZwaveHelper extends IPSModule {
 		
 		$result['count'] = count($routingList);
 		
+		// Z-Wave Information
+		$zwaveInformationJson = ZW_GetInformation($instanceId);
+		$zwaveInformation = json_decode($zwaveInformationJson);
+		
+		if (isset($zwaveInformation->NodePacketFailed) ) {
+			
+			$result['packetsFailed'] = $zwaveInformation->NodePacketFailed;
+		}
+		
+		if (isset($zwaveInformation->NodePacketSend) && isset($zwaveInformation->NodePacketReceived) && isset($zwaveInformation->NodePacketFailed) ) {
+			
+			$packetsTotal = intval($zwaveInformation->NodePacketSend) + intval($zwaveInformation->NodePacketReceived) + intval($zwaveInformation->NodePacketFailed);
+			
+			$errorRate = intval($zwaveInformation->NodePacketFailed) / $packetsTotal * 100;
+			
+			$result['packetsErrorRate'] = round($errorRate,2);
+		}
+		
 		return $result;
 	}
 	
