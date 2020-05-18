@@ -51,7 +51,7 @@ class ZwaveHelper extends IPSModule {
 		$this->RegisterVariableString("DeviceConfiguration","Device Configuration","~HTMLBox");
 		$this->RegisterVariableString("DeviceAssociations","Device Associations","~HTMLBox");
 		$this->RegisterVariableString("DeviceRouting","Device Routing","~HTMLBox");
-		
+		$this->RegisterVariableString("HopCount","Routing Hop Count");
 		
 		// Default Actions
 		$this->EnableAction("OptimizeBadClientSwitch");
@@ -353,6 +353,8 @@ class ZwaveHelper extends IPSModule {
 				$allZwaveDeviceRoutings[] = $currentDeviceRouting;
 			}
 		}
+		
+		
 		
 		array_multisort(array_column($allZwaveDeviceRoutings, "direct"), SORT_DESC, $allZwaveDeviceRoutings );
 		
@@ -684,6 +686,7 @@ class ZwaveHelper extends IPSModule {
 		if (in_array(1, $routingList) ) {
 			
 			$result['direct'] = 1;
+			$result['hops'] = 0;
 		}
 		else {
 			
@@ -1158,6 +1161,12 @@ class ZwaveHelper extends IPSModule {
 
 			$productName = "MultiSensor 6";
 		}
+		
+		if ( ($manufacturerId == "0086") && ($productTypeId == "0003") && ($productId == "0013") ) {
+
+			$productName = "MultiSensor 6";
+		}
+
 
 		return $productName;
 	}
