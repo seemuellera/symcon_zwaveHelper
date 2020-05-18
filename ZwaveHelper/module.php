@@ -1164,7 +1164,7 @@ class ZwaveHelper extends IPSModule {
 		
 		if ( ($manufacturerId == "0086") && ($productTypeId == "0003") && ($productId == "0013") ) {
 
-			$productName = "MultiSensor 6";
+			$productName = "Micro Smart Dimmer (2nd edition)";
 		}
 
 
