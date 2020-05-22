@@ -1142,7 +1142,7 @@ class ZwaveHelper extends IPSModule {
 			$productName = "FGWPE old";
 		}
 		
-		if ( ($manufacturerId == "010F") && ($productTypeId == "0603") && ($productId == "1003") ) {
+		if ( ($manufacturerId == "010F") && ($productTypeId == "0602") && ($productId == "1003") ) {
 
 			$productName = "FGWPE/F-102 ZW5";
 		}
