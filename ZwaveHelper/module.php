@@ -135,7 +135,7 @@ class ZwaveHelper extends IPSModule {
 
 	public function RefreshInformation() {
 
-		$this->LogMessage("ZWHELPER - Refresh in progress");
+		$this->LogMessage("ZWHELPER - Refresh in progress","DEBUG");
 		
 		$this->RefreshDeviceHealth();
 		$this->RefreshDeviceConfiguration();
