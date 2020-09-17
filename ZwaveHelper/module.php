@@ -681,6 +681,8 @@ class ZwaveHelper extends IPSModule {
 		$result['nodeId'] = $this->GetZwaveNodeId($instanceId);
 		
 		// Routing information
+		/* Temporarily Disalbed to have less stress on the Z-Wave Gateway:
+		
 		$routingList = ZW_RequestRoutingList($instanceId, false, false);
 		
 		if (in_array(1, $routingList) ) {
@@ -694,6 +696,10 @@ class ZwaveHelper extends IPSModule {
 		}
 		
 		$result['count'] = count($routingList);
+		*/
+		$result['direct'] = 1;
+		$result['hops'] = 0;
+		$result['count'] = 99;
 		
 		// Z-Wave Information
 		$zwaveInformationJson = ZW_GetInformation($instanceId);
