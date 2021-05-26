@@ -1137,6 +1137,11 @@ class ZwaveHelper extends IPSModule {
 
 			$productName = "Dimmer 2";
 		}
+		
+		if ( ($manufacturerId == "010F") && ($productTypeId == "0403") && ($productId == "1000") ) {
+
+			$productName = "FGS-213";
+		}
 
 		if ( ($manufacturerId == "010F") && ($productTypeId == "0602") && ($productId == "1001") ) {
 
