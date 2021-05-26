@@ -1162,6 +1162,26 @@ class ZwaveHelper extends IPSModule {
 
 			$productName = "FGRGBWM-441";
 		}
+		
+		if ( ($manufacturerId == "010F") && ($productTypeId == "0902") && ($productId == "1000") ) {
+
+			$productName = "FGRGBWM-442";
+		}
+
+		if ( ($manufacturerId == "010F") && ($productTypeId == "0B00") && ($productId == "1001") ) {
+
+			$productName = "FGFS-101 Flood Sensor";
+		}
+		
+		if ( ($manufacturerId == "010F") && ($productTypeId == "0B01") && ($productId == "1002") ) {
+
+			$productName = "FGFS-101 ZW5 Flood Sensor";
+		}
+		
+		if ( ($manufacturerId == "010F") && ($productTypeId == "0B01") && ($productId == "1003") ) {
+
+			$productName = "FGFS-101 ZWave+ Flood Sensor";
+		}
 
 		if ( ($manufacturerId == "019A") && ($productTypeId == "0003") && ($productId == "0003") ) {
 
