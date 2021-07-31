@@ -42,7 +42,8 @@ class ZwaveHelper extends IPSModule {
 		$this->RegisterVariableString("DeviceHealth","Device Health","~HTMLBox");
 		$this->RegisterVariableInteger("DeviceHealthOk","Devices in State Healthy");
 		$this->RegisterVariableInteger("DeviceHealthWarn","Devices in State Warning");
-		$this->RegisterVariableInteger("DeviceHealthCrit","Healthy in State Critical");
+		$this->RegisterVariableInteger("DeviceHealthCrit","Devices in State Critical");
+		$this->RegisterVariableInteger("DeviceHealthLate","Devices in State Late");
 		$this->RegisterVariableBoolean("OptimizeBadClientSwitch","Optimize bad client","~Switch");
 		$this->RegisterVariableInteger("OptimizeBadClientInstanceId","Optimize bad client instance id");
 		$this->RegisterVariableInteger("OptimizeBadClientRun","Optimize bad client run");
@@ -317,6 +318,7 @@ class ZwaveHelper extends IPSModule {
 		SetValue($this->GetIDForIdent('DeviceHealthOk'), $devicesHealthy);
 		SetValue($this->GetIDForIdent('DeviceHealthWarn'), $devicesWarning);
 		SetValue($this->GetIDForIdent('DeviceHealthCrit'), $devicesCritical);
+		SetValue($this->GetIDForIdent('DeviceHealthLate'), count($this->GetDevicesWithLateOptimization($this->ReadPropertyInteger("OptimizeMaxDays"))) );
 		
 		return true;
 	}
