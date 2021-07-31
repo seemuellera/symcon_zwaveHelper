@@ -35,6 +35,7 @@ class ZwaveHelper extends IPSModule {
 		$this->RegisterPropertyInteger("OptimizationInterval", 0);
 		$this->RegisterPropertyInteger("OptimizationTotalRuns", 4);
 		$this->RegisterPropertyInteger("OptimizationRuntime", 60);
+		$this->RegisterPropertyInteger("OptimizeMaxDays", 7);
 		$this->RegisterPropertyBoolean("DebugOutput",false);
 		
 		// Variables
@@ -120,6 +121,7 @@ class ZwaveHelper extends IPSModule {
 		$form['elements'][] = Array("type" => "CheckBox", "name" => "DebugOutput", "caption" => "Enable Debug Output");
 		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "WarningThreshold", "caption" => "Failed Packets - Warning Threshold");
 		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "CriticalThreshold", "caption" => "Failed Packets - Critical Threshold");
+		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "OptimizeMaxDays", "caption" => "Max Days between optimization");
 		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "OptimizationInterval", "caption" => "Optimization Interval");
 		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "OptimizationTotalRuns", "caption" => "Optimization runs");
 		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "OptimizationRuntime", "caption" => "run time per optimization");
@@ -964,6 +966,37 @@ class ZwaveHelper extends IPSModule {
 		return $devicesSorted;
 	}
 	
+	public function GetDevicesWithLateOptimization(int $maxDays) {
+		
+		$allZwaveDevices = $this->GetAllDevices();
+		$devicesWithLateOptimization = Array();
+		$lastOptimizationThreshold = time() - ($maxDays * 24 * 60 * 60);
+		
+		foreach ($allZwaveDevices as $currentDevice) {
+			
+			$currentDeviceHealth = $this->GetDeviceHealth($currentDevice);
+			
+			if (count($currentDeviceHealth) > 0) {
+				
+				if ($currentDeviceHealth['LastOptimization'] <= $lastOptimizationThreshold) {
+					
+					$devicesWithLateOptimization[] = $currentDeviceHealth;
+				}
+			}
+		}
+		
+		array_multisort(array_column($devicesWithLateOptimization, "LastOptimization"), SORT_ASC, $devicesWithLateOptimization);
+		
+		$devicesSorted = Array();
+		
+		foreach($devicesWithLateOptimization as $currentDevice) {
+			
+			$devicesSorted[] = $currentDevice['instanceId'];
+		}
+		
+		return $devicesSorted;
+	}
+	
 	public function OptimizeBadClientEx(int $instanceId) {
 		
 		// Check if the submitted instance ID is a Z-wave device
@@ -1007,8 +1040,18 @@ class ZwaveHelper extends IPSModule {
 			
 			if (count($badClients) == 0) {
 				
-				$this->LogMessage("No bad clients found.","DEBUG");
-				return;
+				$lateClients = $this->GetDevicesWithLateOptimization($this->ReadPropertyInteger("OptimizeMaxDays") );
+				
+				if (count($lateClients) == 0) {
+				
+					$this->LogMessage("No bad clients found.","DEBUG");
+					return;
+				}
+				else {
+					
+					$this->LogMessage("Late clients found: " . count($lateClients) . " / Optimizing the worst one: " . $lateClients[0], "DEBUG");
+					$instanceId = $lateClients[0];
+				}
 			}
 			else {
 				
