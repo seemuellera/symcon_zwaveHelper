@@ -978,14 +978,14 @@ class ZwaveHelper extends IPSModule {
 			
 			if (count($currentDeviceHealth) > 0) {
 				
-				if ($currentDeviceHealth['LastOptimization'] <= $lastOptimizationThreshold) {
+				if ($currentDeviceHealth['lastOptimization'] <= $lastOptimizationThreshold) {
 					
 					$devicesWithLateOptimization[] = $currentDeviceHealth;
 				}
 			}
 		}
 		
-		array_multisort(array_column($devicesWithLateOptimization, "LastOptimization"), SORT_ASC, $devicesWithLateOptimization);
+		array_multisort(array_column($devicesWithLateOptimization, "lastOptimization"), SORT_ASC, $devicesWithLateOptimization);
 		
 		$devicesSorted = Array();
 		
