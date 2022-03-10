@@ -159,7 +159,11 @@ class ZwaveHelper extends IPSModule {
 				}
 				else {
 					
-					$this->LogMessage("Ignoring turning off request as it will turn off as soon as the optimization finishes","DEBUG");
+					$this->LogMessage("Aborting the running optimization by user request.");
+					SetValue($this->GetIDForIdent('OptimizeBadClientInstanceId'), NULL);
+					SetValue($this->GetIDForIdent('OptimizeBadClientRun'), 0);
+					SetValue($this->GetIDForIdent('OptimizeBadClientSwitch'), false);
+					$this->SetTimerInterval("OptimizeBadClientRunTimer", 0);
 				}
 				
 				// Neuen Wert in die Statusvariable schreiben
