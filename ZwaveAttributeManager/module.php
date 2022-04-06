@@ -164,7 +164,7 @@ class ZwaveAttributeManager extends IPSModule {
 		}
 	}
 
-	public function SetTargetValue($newValue) {
+	public function SetTargetValue(int $newValue) {
 
 		if (! GetValue($this->GetIDForIdent("Status")) ) {
 
