@@ -38,7 +38,7 @@ class ZwaveAttributeManager extends IPSModule {
 		// Variables
 		$this->RegisterVariableInteger("TargetValue", "Target Value");
 		$this->RegisterVariableInteger("CurrentValue", "Current Value");
-		$this->RegisterVariableBoolean("ParameterInSync","Parameter Value in Sync","~Alert");
+		$this->RegisterVariableBoolean("ParameterInSync","Parameter Value in Sync","~Alert.Reversed");
 		$this->RegisterVariableBoolean("Status","Status","~Switch");
 		
 		// Default Actions
