@@ -156,7 +156,7 @@ class ZwaveAttributeManager extends IPSModule {
 			return;
 		}
 
-		$result = ZW_GetConfigurationValue($this->ReadPropertyInteger("ZwaveInstanceId"), $this->ReadPropertyInteger("ParameterId"));
+		$result = ZW_ConfigurationGetValue($this->ReadPropertyInteger("ZwaveInstanceId"), $this->ReadPropertyInteger("ParameterId"));
 
 		if ($result) {
 
@@ -174,7 +174,7 @@ class ZwaveAttributeManager extends IPSModule {
 
 		SetValue($this->GetIDForIdent("TargetValue"), $newValue);
 
-		$result = ZW_SetConfigurationValue($this->ReadPropertyInteger("ZwaveInstanceId"), $this->ReadPropertyInteger("ParameterId"), $newValue);
+		$result = ZW_ConfigurationSetValue($this->ReadPropertyInteger("ZwaveInstanceId"), $this->ReadPropertyInteger("ParameterId"), $newValue);
 
 		if (! $result) {
 
