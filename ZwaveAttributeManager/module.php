@@ -101,7 +101,7 @@ class ZwaveAttributeManager extends IPSModule {
 		
 		$this->GetCurrentValue();
 
-		if ( ReadValue($this->GetIDForIdent("CurrentValue")) == ReadValue($this->GetIDForIdent("TargetValue")) ) {
+		if ( GetValue($this->GetIDForIdent("CurrentValue")) == GetValue($this->GetIDForIdent("TargetValue")) ) {
 
 			SetValue($this->GetIDForIdent("ParameterInSync"), true);
 		}
