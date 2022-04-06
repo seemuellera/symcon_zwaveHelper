@@ -31,6 +31,7 @@ class ZwaveAttributeManager extends IPSModule {
 		$this->RegisterPropertyString("Sender","ZwaveAttributeManager");
 		$this->RegisterPropertyInteger("RefreshInterval",0);
 		$this->RegisterPropertyBoolean("DebugOutput",false);
+		$this->RegisterPropertyInteger("FetchInterval",0);
 		$this->RegisterPropertyInteger("ZwaveInstanceId",0);
 		$this->RegisterPropertyInteger("ParameterId",0);
 		
@@ -46,6 +47,7 @@ class ZwaveAttributeManager extends IPSModule {
 
 		// Timer
 		$this->RegisterTimer("RefreshInformation", 0 , 'ZWAM_RefreshInformation($_IPS[\'TARGET\']);');
+		$this->RegisterTimer("FetchInformation", 0 , 'ZWAM_FetchValueFromDevice($_IPS[\'TARGET\']);');
     }
 
 	public function Destroy() {
@@ -77,6 +79,7 @@ class ZwaveAttributeManager extends IPSModule {
 
 		// Add the Elements
 		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "RefreshInterval", "caption" => "Refresh Interval");
+		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "FetchInterval", "caption" => "Fetch from Device Interval");
 		$form['elements'][] = Array("type" => "CheckBox", "name" => "DebugOutput", "caption" => "Enable Debug Output");
 		$form['elements'][] = Array("type" => "SelectInstance", "name" => "ZwaveInstanceId", "caption" => "Zwave Instance", "validModules" => Array(ZWAVE_DEVICE_GUID));
 		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "ParameterId", "caption" => "Parameter ID");
@@ -148,6 +151,22 @@ class ZwaveAttributeManager extends IPSModule {
 		parent::LogMessage($messageComplete, $logMappings[$severity]);
 	}
 	
+	public function FetchCurrentValue() {
+
+		if (! GetValue($this->GetIDForIdent("Status")) ) {
+
+			$this->LogMessage("Skipping fetch current value because instance Status is off", "DEBUG");
+			return;
+		}
+
+		$result = ZW_ConfigurationGetValue($this->ReadPropertyInteger("ZwaveInstanceId"), $this->ReadPropertyInteger("ParameterId"));
+
+		if (! $result) {
+
+			$this->LogMessage("Unable to fetch configuration value from device","WARN");
+		}
+	}
+
 	public function GetCurrentValue() {
 
 		if (! GetValue($this->GetIDForIdent("Status")) ) {
@@ -156,12 +175,21 @@ class ZwaveAttributeManager extends IPSModule {
 			return;
 		}
 
-		$result = ZW_ConfigurationGetValue($this->ReadPropertyInteger("ZwaveInstanceId"), $this->ReadPropertyInteger("ParameterId"));
+		$result = ZW_GetInformation($this->ReadPropertyInteger("ZwaveInstanceId"));
 
-		if ($result) {
+		if (! $result) {
 
-			SetValue($this->GetIDForIdent("CurrentValue"), $result);
+			$this->LogMessage("Unable to get device information", "ERROR");
+			return;
 		}
+
+		$resultDecoded = json_decode($result);
+		$parameterJson = $resultDecoded->ConfigurationValues;
+		$parameters = json_decode($parameterJson, true);
+
+		$parameterValue = $parameters[$this->ReadPropertyInteger("ParameterId")]["Value"];
+
+		SetValue($this->GetIDForIdent("CurrentValue"), $parameterValue);
 	}
 
 	public function SetTargetValue(int $newValue) {
