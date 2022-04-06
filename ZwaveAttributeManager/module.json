@@ -1,0 +1,15 @@
+{
+    "id": "{03C2B1EF-3500-4D0A-8E0F-99EF4C0B9139}",
+    "name": "ZwaveAttributeManager",
+    "type": 3,
+    "vendor": "Andreas Seemueller",
+    "aliases": 
+    [
+        "ZwaveAttributeManager"
+    ],
+    "parentRequirements": [],
+    "childRequirements": [],
+    "implemented": [],
+    "prefix": "ZWAM"
+  }
+  
