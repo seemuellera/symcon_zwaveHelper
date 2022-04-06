@@ -9,7 +9,7 @@ define("COLOR_WARN","orange");
 define("COLOR_CRIT","red");
 
 // Klassendefinition
-class ZwaveHelper extends IPSModule {
+class ZwaveAttributeManager extends IPSModule {
  
 	// Der Konstruktor des Moduls
 	// Überschreibt den Standard Kontruktor von IPS
